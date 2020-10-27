@@ -1,0 +1,39 @@
+disabled_rules:
+ - line_length
+ - trailing_whitespace
+ - todo
+ - cyclomatic_complexity
+ - file_length
+ - type_body_length
+ - function_body_length
+ - nesting
+ - trailing_comma
+ - opening_brace
+opt_in_rules:
+ - empty_count
+ - empty_string
+ - legacy_random
+ - let_var_whitespace
+ - literal_expression_end_indentation
+ - override_in_extension
+ - redundant_type_annotation
+ - toggle_bool
+ - unneeded_parentheses_in_closure_argument
+ - unused_import
+ - trailing_closure
+identifier_name: 
+  min_length:
+    warning: 0
+  max_length:
+    warning: 100
+excluded:
+ - Store/Supporting files/R.generated.swift
+ - Pods/
+custom_rules:
+  local_todo: # rule identifier
+    name: "Todo" # rule name. optional.
+    regex: "\\b(?:TODO|FIXME)(?::|\\b)" # matching pattern
+    match_kinds: # SyntaxKinds to match. optional.
+      - comment
+    message: "TODOs should be resolved" # violation message. optional.
+    severity: warning # violation severity. optional.
