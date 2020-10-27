@@ -2,20 +2,24 @@ PODS:
   - R.swift (5.2.2):
     - R.swift.Library (~> 5.2.0)
   - R.swift.Library (5.2.0)
+  - SwiftyVK (3.4.2)
 
 DEPENDENCIES:
   - R.swift
   - R.swift.Library
+  - SwiftyVK
 
 SPEC REPOS:
   trunk:
     - R.swift
     - R.swift.Library
+    - SwiftyVK
 
 SPEC CHECKSUMS:
   R.swift: 7c52cdc57a66840ffe6cbd8a823d732059d42a32
   R.swift.Library: 5ba4f1631300caf9a4d890186930da85d540769d
+  SwiftyVK: 5005dac6e85f7b0fd44e21ed2f021a397dff4cab
 
-PODFILE CHECKSUM: c98fc249852162d19db01a8eae19e52165303e1a
+PODFILE CHECKSUM: 7df2e3da3ed40e7caa0b3698f26bc2834f4c9679
 
 COCOAPODS: 1.9.3
