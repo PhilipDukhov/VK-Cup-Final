@@ -9,11 +9,21 @@
 /* Begin PBXBuildFile section */
 		399D55F169A6CD12A235DBD8 /* Pods_Store.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3261196A611B522A93C279E /* Pods_Store.framework */; };
 		D523C0F2254857A50035985A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D523C0F1254857A50035985A /* AppDelegate.swift */; };
-		D523C0F6254857A50035985A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D523C0F5254857A50035985A /* ViewController.swift */; };
+		D523C0F6254857A50035985A /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D523C0F5254857A50035985A /* AuthViewController.swift */; };
 		D523C0F9254857A50035985A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D523C0F7254857A50035985A /* Main.storyboard */; };
 		D523C0FB254857A70035985A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D523C0FA254857A70035985A /* Assets.xcassets */; };
 		D523C0FE254857A70035985A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D523C0FC254857A70035985A /* LaunchScreen.storyboard */; };
 		D5B5D8F725485B6500A73809 /* R.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5D8F625485B6500A73809 /* R.generated.swift */; };
+		D5B5D91425485EC200A73809 /* Market.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5D91325485EC200A73809 /* Market.swift */; };
+		D5B5D9172548610C00A73809 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5D9162548610C00A73809 /* Product.swift */; };
+		D5B5D925254865C400A73809 /* VkApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5D924254865C400A73809 /* VkApiManager.swift */; };
+		D5B5D9382548B91900A73809 /* PhotoSizeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5D9372548B91900A73809 /* PhotoSizeType.swift */; };
+		D5B5D93B2548BA8100A73809 /* ServerItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5D93A2548BA8100A73809 /* ServerItems.swift */; };
+		D5B5D9402548C57400A73809 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5D93F2548C57400A73809 /* Group.swift */; };
+		D5B5D9432548C66700A73809 /* City.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5D9422548C66700A73809 /* City.swift */; };
+		D5B5D9482548DA3F00A73809 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5D9472548DA3F00A73809 /* Photo.swift */; };
+		D5B5D94B2548DFB500A73809 /* Price.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5D94A2548DFB500A73809 /* Price.swift */; };
+		D5B5D94F2548E20200A73809 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B5D94E2548E20200A73809 /* Country.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,12 +31,22 @@
 		D3261196A611B522A93C279E /* Pods_Store.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Store.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D523C0EE254857A50035985A /* Store.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Store.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D523C0F1254857A50035985A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		D523C0F5254857A50035985A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		D523C0F5254857A50035985A /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		D523C0F8254857A50035985A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D523C0FA254857A70035985A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D523C0FD254857A70035985A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D523C0FF254857A70035985A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D5B5D8F625485B6500A73809 /* R.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = R.generated.swift; sourceTree = "<group>"; };
+		D5B5D91325485EC200A73809 /* Market.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Market.swift; sourceTree = "<group>"; };
+		D5B5D9162548610C00A73809 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
+		D5B5D924254865C400A73809 /* VkApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VkApiManager.swift; sourceTree = "<group>"; };
+		D5B5D9372548B91900A73809 /* PhotoSizeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSizeType.swift; sourceTree = "<group>"; };
+		D5B5D93A2548BA8100A73809 /* ServerItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerItems.swift; sourceTree = "<group>"; };
+		D5B5D93F2548C57400A73809 /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
+		D5B5D9422548C66700A73809 /* City.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = City.swift; sourceTree = "<group>"; };
+		D5B5D9472548DA3F00A73809 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		D5B5D94A2548DFB500A73809 /* Price.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Price.swift; sourceTree = "<group>"; };
+		D5B5D94E2548E20200A73809 /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		E8FDE494F660D55EA1751D69 /* Pods-Store.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Store.release.xcconfig"; path = "Target Support Files/Pods-Store/Pods-Store.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,8 +100,9 @@
 		D523C0F0254857A50035985A /* Store */ = {
 			isa = PBXGroup;
 			children = (
-				D523C0F5254857A50035985A /* ViewController.swift */,
-				D523C0F7254857A50035985A /* Main.storyboard */,
+				D5B5D90B25485E1600A73809 /* Model */,
+				D5B5D9192548629200A73809 /* Managers */,
+				D5B5D90C25485E1F00A73809 /* View */,
 				D5B5D8EF25485AC200A73809 /* Supporting files */,
 			);
 			path = Store;
@@ -97,6 +118,47 @@
 				D523C0FF254857A70035985A /* Info.plist */,
 			);
 			path = "Supporting files";
+			sourceTree = "<group>";
+		};
+		D5B5D90B25485E1600A73809 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D5B5D91325485EC200A73809 /* Market.swift */,
+				D5B5D9162548610C00A73809 /* Product.swift */,
+				D5B5D94A2548DFB500A73809 /* Price.swift */,
+				D5B5D9472548DA3F00A73809 /* Photo.swift */,
+				D5B5D93F2548C57400A73809 /* Group.swift */,
+				D5B5D9422548C66700A73809 /* City.swift */,
+				D5B5D94E2548E20200A73809 /* Country.swift */,
+				D5B5D9372548B91900A73809 /* PhotoSizeType.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		D5B5D90C25485E1F00A73809 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D523C0F7254857A50035985A /* Main.storyboard */,
+				D5B5D90E25485E4B00A73809 /* Controllers */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		D5B5D90E25485E4B00A73809 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				D523C0F5254857A50035985A /* AuthViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		D5B5D9192548629200A73809 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				D5B5D924254865C400A73809 /* VkApiManager.swift */,
+				D5B5D93A2548BA8100A73809 /* ServerItems.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,6 +181,8 @@
 			dependencies = (
 			);
 			name = Store;
+			packageProductDependencies = (
+			);
 			productName = Store;
 			productReference = D523C0EE254857A50035985A /* Store.app */;
 			productType = "com.apple.product-type.application";
@@ -253,9 +317,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D523C0F6254857A50035985A /* ViewController.swift in Sources */,
+				D5B5D9382548B91900A73809 /* PhotoSizeType.swift in Sources */,
+				D5B5D9432548C66700A73809 /* City.swift in Sources */,
+				D5B5D91425485EC200A73809 /* Market.swift in Sources */,
+				D523C0F6254857A50035985A /* AuthViewController.swift in Sources */,
+				D5B5D94F2548E20200A73809 /* Country.swift in Sources */,
+				D5B5D9402548C57400A73809 /* Group.swift in Sources */,
+				D5B5D94B2548DFB500A73809 /* Price.swift in Sources */,
+				D5B5D925254865C400A73809 /* VkApiManager.swift in Sources */,
 				D523C0F2254857A50035985A /* AppDelegate.swift in Sources */,
+				D5B5D9482548DA3F00A73809 /* Photo.swift in Sources */,
 				D5B5D8F725485B6500A73809 /* R.generated.swift in Sources */,
+				D5B5D9172548610C00A73809 /* Product.swift in Sources */,
+				D5B5D93B2548BA8100A73809 /* ServerItems.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,14 +478,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = FVMDZDYX72;
+				DEVELOPMENT_TEAM = UV9KR38NWW;
 				INFOPLIST_FILE = "Store/Supporting files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bubble.Store;
+				PRODUCT_BUNDLE_IDENTIFIER = "Philip-Dukhov.VK-CUP-Final";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -425,14 +499,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = FVMDZDYX72;
+				DEVELOPMENT_TEAM = UV9KR38NWW;
 				INFOPLIST_FILE = "Store/Supporting files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bubble.Store;
+				PRODUCT_BUNDLE_IDENTIFIER = "Philip-Dukhov.VK-CUP-Final";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -1,5 +1,6 @@
 ios_deployment_target = '10.0'
 
+inhibit_all_warnings!
 platform :ios, ios_deployment_target
 
 target 'Store' do
