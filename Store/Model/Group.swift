@@ -7,40 +7,39 @@
 
 import Foundation
 
-// swiftlint:disable identifier_name
-
 struct Group: Codable {
-    struct Size: PhotoSize {
-        let type: PhotoSizeType
-        let src: String
-        let width: Int
-        let height: Int
-    }
     enum Visibility: Int, Codable {
         case opened
         case closed
-        case `private`
     }
     
-    let id: String
+    let id: Int
     let name: String
     let visibility: Visibility
-    
-    private let photo_50: String
-    private let photo_100: String
-    private let photo_200: String
-    
-    var photoSizes: PhotoSizes<Size> {
+    var photoSizes: PhotoSizes {
         let sizes = [
-            50: photo_50,
-            100: photo_100,
-            200: photo_200,
+            50: photo50,
+            100: photo100,
+            200: photo200,
         ].map {
-            Size(type: .custom,
+            PhotoSize(type: .custom,
                  src: $0.value,
                  width: $0.key,
                  height: $0.key)
         }
         return PhotoSizes(sizes: sizes)
+    }
+    
+    private let photo50: String
+    private let photo100: String
+    private let photo200: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case photo50 = "photo_50"
+        case photo100 = "photo_100"
+        case photo200 = "photo_200"
+        case visibility = "is_closed"
     }
 }

@@ -33,40 +33,83 @@ enum PhotoSizeType: String, Codable {
     }
 }
 
-protocol PhotoSize: Codable, Hashable {
-    var type: PhotoSizeType { get }
-    var src: String { get }
-    var width: Int { get }
-    var height: Int { get }
-}
-
-extension PhotoSize {
+struct PhotoSize: Codable, Hashable {
+    let type: PhotoSizeType
+    let src: String
+    let width: Int
+    let height: Int
+    
     var size: CGSize {
         .init(width: width, height: height)
     }
     
     var url: URL { URL(string: src)! }
+    
+    enum CodingKeys: String, CodingKey {
+        case type
+        case src
+        case url
+        case width
+        case height
+    }
+    
+    init(
+        type: PhotoSizeType,
+        src: String,
+        width: Int,
+        height: Int
+    ) {
+        self.type = type
+        self.src = src
+        self.width = width
+        self.height = height
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        type = try container.decode(PhotoSizeType.self, forKey: .type)
+        src = try (container.decodeIfPresent(String.self, forKey: .url) ??
+            container.decode(String.self, forKey: .src))
+        width = try container.decode(Int.self, forKey: .width)
+        height = try container.decode(Int.self, forKey: .height)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(type, forKey: .type)
+        try container.encode(src, forKey: .src)
+        try container.encode(width, forKey: .width)
+        try container.encode(height, forKey: .height)
+    }
 }
 
-struct PhotoSizes<Size: PhotoSize>: Codable, Hashable {
-    let sizes: [Size]
+struct PhotoSizes: Codable, Hashable {
+    let sizes: [PhotoSize]
     
-    init(sizes: [Size]) {
+    init(sizes: [PhotoSize]) {
         self.sizes = sizes
+            .sorted()
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        sizes = try container.decode([Size].self)
+        sizes = try container.decode([PhotoSize].self)
             .filter { $0.type.isAspectRatioOriginal }
-            .sorted { $0.width < $1.width }
+            .sorted()
     }
     
-    func bestQualityPhoto(forContainer size: CGSize) -> Size {
-        let res = sizes.first {
+    func bestQualityPhoto(forContainer size: CGSize) -> PhotoSize? {
+        sizes.first {
             $0.size.width > size.width * UIScreen.main.scale &&
                 $0.size.height > size.height * UIScreen.main.scale
-        } ?? sizes.last!
-        return res
+        } ?? sizes.last
+    }
+    
+    static let zero = Self(sizes: [])
+}
+
+extension Array where Element == PhotoSize {
+    fileprivate func sorted() -> Self {
+        sorted { $0.width < $1.width }
     }
 }

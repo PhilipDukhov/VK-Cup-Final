@@ -8,26 +8,12 @@
 import Foundation
 
 struct Photo: Codable, Hashable {
-    struct Size: PhotoSize {
-        let type: PhotoSizeType
-        let src: String
-        let width: Int
-        let height: Int
-        
-        enum CodingKeys: String, CodingKey {
-            case type
-            case src = "url"
-            case width
-            case height
-        }
-    }
-    
     let id: Int
     let albumId: Int
     let ownerId: Int
     let text: String
     let date: Date
-    let sizes: PhotoSizes<Size>
+    let sizes: PhotoSizes
     let width: Int?
     let height: Int?
     

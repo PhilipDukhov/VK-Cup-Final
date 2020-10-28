@@ -4,11 +4,12 @@ inhibit_all_warnings!
 platform :ios, ios_deployment_target
 
 target 'Store' do
-	use_frameworks!
-	
+  use_frameworks!
+  
   pod 'SwiftyVK'
-	pod 'R.swift.Library'
-	pod 'R.swift'
+  pod 'R.swift.Library'
+  pod 'R.swift'
+  pod 'DeepDiff'
 end
 
 post_install do |installer|

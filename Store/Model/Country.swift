@@ -8,6 +8,6 @@
 import Foundation
 
 struct Country: Codable {
-    let id: String
+    let id: Int
     let title: String
 }

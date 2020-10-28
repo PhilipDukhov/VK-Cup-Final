@@ -25,82 +25,84 @@ class VkApiManager {
             }
         }
     }
+    private enum ResponseContainer {
+        case items
+        case response
+    }
     
-    private var userId: String?
-    private var userLocationInfo: UserLocationInfo?
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         return decoder
     }()
     
-    // MARK: Auth
-    
-    func authorize(
-        completion: @escaping (Result<Void, Error>) -> Void
-    ) {
-        let success = { [weak self] (tokenInfo: [String: String]) in
-            guard let userId = tokenInfo["user_id"] else {
-                completion(.failure(.emptyResponse))
-                return
-            }
-            self?.userId = userId
-            completion(.success(()))
-        }
-        VK.sessions.default.logIn(
-            onSuccess: success) { error in
-            switch error {
-            case .sessionAlreadyAuthorized(let session) where session.accessToken != nil:
-                success(session.accessToken!.info)
-                
-            default:
-                completion(.failure(.vkError(error)))
-            }
-        }
-    }
-    
     // MARK: public requests
     
-    func listMarketGroups(
-        query: String,
-        cityId: String? = nil,
-        completion: @escaping (Result<[Group], Error>) -> Void
+    func getCurrentUserLocationInfo(
+        completion: @escaping (Result<UserInfo, Error>) -> Void
     ) {
-        solveCityId(selectedId: cityId) { [self] result in
-            switch result {
-            case .success(let cityId):
-                sendHandleAndParse(
-                    VK.API.Groups.search([
-                        .q: query,
-                        .market: "1",
-                        .cityId: cityId
-                    ]),
-                    completion: completion
-                )
-                
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        sendHandleAndParseFirst(
+            VK.API.Users.get([
+                .fields: "city,country",
+            ]),
+            container: .response,
+            completion: completion
+        )
     }
     
-    func listCities(
+    func getMarketGroups(
+        query: String,
+        city: City,
+        completion: @escaping (Result<[Group], Error>) -> Void
+    ) {
+        sendHandleAndParse(
+            VK.API.Groups.search(.stringifyValues([
+                .q: query.isEmpty ? "Music" : query,
+                .market: 1,
+                .cityId: city.id,
+            ])),
+            container: .items,
+            completion: completion
+        )
+    }
+    
+    func getDefaultCountry(
+        completion: @escaping (Result<Country, Error>) -> Void
+    ) {
+        sendHandleAndParseFirst(
+            VK.API.Database.getCountries([
+                .code: "RU",
+            ]),
+            container: .items,
+            completion: completion
+        )
+    }
+    
+    func getCities(
+        country: Country,
         completion: @escaping (Result<[City], Error>) -> Void
     ) {
-        solveUserLocationInfo { [weak self] result in
-            switch result {
-            case .failure(let error):
-                completion(.failure(error))
-                
-            case .success(let userLocationInfo):
-                self?.sendHandleAndParse(
-                    VK.API.Database.getCities([
-                        .countryId: userLocationInfo.county.id,
-                    ]),
-                    completion: completion
-                )
-            }
-        }
+        sendHandleAndParse(
+            VK.API.Database.getCities(.stringifyValues([
+                .countryId: country.id,
+            ])),
+            container: .items,
+            completion: completion
+        )
+    }
+    
+    func getDefaultCity(
+        country: Country,
+        completion: @escaping (Result<City, Error>) -> Void
+    ) {
+        sendHandleAndParseFirst(
+            VK.API.Database.getCities(.stringifyValues([
+                .countryId: country.id,
+                .count: "1"
+            ])),
+            container: .items,
+            completion: completion
+        )
     }
     
     func listProducts(
@@ -111,68 +113,35 @@ class VkApiManager {
             VK.API.Market.get([
                 .ownerId: "-\(group.id)",
             ]),
+            container: .items,
             completion: completion
         )
-    }
-         
-    // MARK: Request helpers
-    
-    private func solveCityId(
-        selectedId: String?,
-        completion: @escaping (Result<String, Error>) -> Void
-    ) {
-        if let cityId = selectedId {
-            completion(.success(cityId))
-        } else {
-            solveUserLocationInfo { result in
-                completion(result.map { $0.city.id })
-            }
-        }
-    }
-    
-    private func solveUserLocationInfo(
-        completion: @escaping (Result<UserLocationInfo, Error>) -> Void
-    ) {
-        if let userLocationInfo = userLocationInfo {
-            completion(.success(userLocationInfo))
-        } else {
-            getCurrentUserLocationInfo { [weak self] result in
-                self?.userLocationInfo = try? result.get()
-                completion(result)
-            }
-        }
-    }
-    
-    // MARK: Private requests
-    
-    private func getCurrentUserLocationInfo(
-        completion: @escaping (Result<UserLocationInfo, Error>) -> Void
-    ) {
-        sendHandleAndParse(
-            VK.API.Users.get([
-                .fields: "city,country",
-            ])
-        ) { [weak self] (result: Result<[UserLocationInfo], Error>) in
-            self.map { completion($0.flatMapFirst(from: result)) }
-        }
     }
     
     // MARK: Parsing helpers
     
     private func sendHandleAndParse<R: Codable>(
         _ apiMethod: APIMethod,
+        container: ResponseContainer,
         completion: @escaping (Result<[R], Error>) -> Void
     ) {
         apiMethod.onSuccess { [weak self] data in
             guard let strongSelf = self else { return }
-            completion(
-                .success(
-                    try strongSelf.decoder.decode(
-                        ServerItems<R>.self,
-                        from: data
-                    ).items
+            let result: [R]
+            switch container {
+            case .items:
+                result = try strongSelf.decoder.decode(
+                    ResponseItems<R>.self,
+                    from: data
+                ).items
+                
+            case .response:
+                result = try strongSelf.decoder.decode(
+                    [R].self,
+                    from: data
                 )
-            )
+            }
+            completion(.success(result))
         }
         .onError {
             completion(
@@ -182,6 +151,19 @@ class VkApiManager {
             )
         }
         .send()
+    }
+    
+    private func sendHandleAndParseFirst<R: Codable>(
+        _ apiMethod: APIMethod,
+        container: ResponseContainer,
+        completion: @escaping (Result<R, Error>) -> Void
+    ) {
+        sendHandleAndParse(
+            apiMethod,
+            container: container
+        ) { [weak self] (result: Result<[R], Error>) in
+            self.map { completion($0.flatMapFirst(from: result)) }
+        }
     }
     
     private func flatMapFirst<R>(
@@ -194,9 +176,12 @@ class VkApiManager {
             return .success(value)
         }
     }
-    
-    private struct UserLocationInfo: Codable {
-        let city: City
-        let county: Country
+}
+
+extension SwiftyVK.Parameters {
+    // no need to wrap values to string
+    fileprivate static func stringifyValues(_ anyValueDict: [Key: Any]) -> Self {
+        anyValueDict
+            .reduce(into: [:]) { $0[$1.0] = "\($1.1)" }
     }
 }
