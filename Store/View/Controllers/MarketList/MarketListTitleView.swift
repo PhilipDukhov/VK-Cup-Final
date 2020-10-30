@@ -52,7 +52,6 @@ class MarketListTitleView: UIView {
             x: titleLabel.bounds.width + .distance,
             y: (frame.height - dropdownImageView.frame.height) / 2 + .imageCenterYOffset
         )
-        print(#function, superview?.bounds.width, superview?.superview?.bounds.width, frame.width)
     }
     
     init() {

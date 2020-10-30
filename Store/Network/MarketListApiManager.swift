@@ -32,17 +32,17 @@ class MarketListApiManager {
             VK.API.Custom.execute(
                 code: """
                     var groups = API.groups.search({
-                        "q": "\(query.isEmpty ? "Одежда" : query)",
-                        "market": 1,
-                        "cityId": \(city.id),
+                        "q":"\(query.isEmpty ? "Одежда" : query)",
+                        "market":1,
+                        "cityId":\(city.id),
                     }).items;
                     var filteredGroups = [];
-                    var i = 0;
+                    var i=0;
                     while (i!=groups.length) {
                         if (API.market.get({
                                     "owner_id": "-"+groups[i].id,
                                     "count": 0,
-                                }).count==0)
+                                }).count!=0)
                         {
                             filteredGroups.push(groups[i]);
                         }

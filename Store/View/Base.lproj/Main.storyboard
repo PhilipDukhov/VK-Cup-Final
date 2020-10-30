@@ -116,9 +116,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="8xN-4y-rqz">
-                        <barButtonItem key="rightBarButtonItem" title="QR" id="365-FK-Puh">
+                        <barButtonItem key="rightBarButtonItem" image="qrCamera" id="365-FK-Puh">
                             <connections>
-                                <segue destination="wj8-gv-oUG" kind="show" id="DDf-Zh-Xt4"/>
+                                <segue destination="wj8-gv-oUG" kind="show" identifier="camera" id="DDf-Zh-Xt4"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -486,6 +486,11 @@
                     </view>
                     <navigationItem key="navigationItem" id="VlL-hY-DD8">
                         <barButtonItem key="backBarButtonItem" title=" " id="TXV-yj-jTb"/>
+                        <barButtonItem key="rightBarButtonItem" image="productStory" id="cSG-HD-1ic">
+                            <connections>
+                                <segue destination="wj8-gv-oUG" kind="show" identifier="story" id="nxR-Qu-lXl"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="3fg-ba-RLI" id="Vtz-su-CZP"/>
@@ -503,7 +508,7 @@
         <scene sceneID="057-vd-Jsu">
             <objects>
                 <viewController id="wj8-gv-oUG" customClass="CameraViewController" customModule="Store" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="NMW-Xq-KRQ" customClass="PreviewView" customModule="Store" customModuleProvider="target">
+                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="NMW-Xq-KRQ" customClass="PreviewView" customModule="Store" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -544,6 +549,17 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="scrim_bottom_alpha64" translatesAutoresizingMaskIntoConstraints="NO" id="tVg-oV-vg9">
                                 <rect key="frame" x="0.0" y="606" width="414" height="290"/>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oSY-Sg-FXv">
+                                <rect key="frame" x="8" y="96" width="48" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="UE8-Zm-2jr"/>
+                                    <constraint firstAttribute="width" secondItem="oSY-Sg-FXv" secondAttribute="height" id="jxe-hD-65j"/>
+                                </constraints>
+                                <state key="normal" title="Button" image="cancel_shadow_48"/>
+                                <connections>
+                                    <action selector="closeButtonTap" destination="wj8-gv-oUG" eventType="touchUpInside" id="Cpp-UF-F8e"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eGg-xm-qdw">
                                 <rect key="frame" x="97" y="742" width="220" height="96"/>
                                 <subviews>
@@ -607,6 +623,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="tVg-oV-vg9" secondAttribute="bottom" id="0pZ-NC-HqF"/>
+                            <constraint firstItem="oSY-Sg-FXv" firstAttribute="top" secondItem="QeD-Fj-fjA" secondAttribute="top" constant="8" id="5o8-uY-V8A"/>
                             <constraint firstItem="AIu-vV-XSp" firstAttribute="top" secondItem="NMW-Xq-KRQ" secondAttribute="top" id="9n5-dX-0Ge"/>
                             <constraint firstItem="kBf-0N-rVW" firstAttribute="centerX" secondItem="NMW-Xq-KRQ" secondAttribute="centerX" id="EWZ-mJ-jck"/>
                             <constraint firstItem="shu-Vn-pfu" firstAttribute="leading" secondItem="NMW-Xq-KRQ" secondAttribute="leading" id="Ewd-Ry-Kf4"/>
@@ -616,6 +633,7 @@
                             <constraint firstItem="kBf-0N-rVW" firstAttribute="centerX" secondItem="eGg-xm-qWw" secondAttribute="centerX" id="XED-2e-iL6"/>
                             <constraint firstItem="kBf-0N-rVW" firstAttribute="leading" secondItem="F7J-s4-rlI" secondAttribute="trailing" constant="14" id="Xgl-fl-u5G"/>
                             <constraint firstItem="tVg-oV-vg9" firstAttribute="leading" secondItem="NMW-Xq-KRQ" secondAttribute="leading" id="fNm-b3-U2M"/>
+                            <constraint firstItem="oSY-Sg-FXv" firstAttribute="leading" secondItem="QeD-Fj-fjA" secondAttribute="leading" constant="8" id="iz1-Lh-yuP"/>
                             <constraint firstAttribute="trailing" secondItem="shu-Vn-pfu" secondAttribute="trailing" id="n08-fC-dLt"/>
                             <constraint firstAttribute="bottom" secondItem="AIu-vV-XSp" secondAttribute="bottom" id="p8Z-GY-Juy"/>
                             <constraint firstItem="AIu-vV-XSp" firstAttribute="trailing" secondItem="NMW-Xq-KRQ" secondAttribute="trailing" id="pQv-YF-pM3"/>
@@ -647,11 +665,17 @@
             <point key="canvasLocation" x="1819" y="-721"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="DDf-Zh-Xt4"/>
+    </inferredMetricsTieBreakers>
     <resources>
+        <image name="cancel_shadow_48" width="48" height="48"/>
         <image name="check_circle_on_24" width="24" height="24"/>
         <image name="dismiss_24" width="24" height="24"/>
         <image name="flash_off_outline_shadow_48" width="48" height="48"/>
         <image name="flash_shadow_48" width="48" height="48"/>
+        <image name="productStory" width="29" height="29"/>
+        <image name="qrCamera" width="24" height="24"/>
         <image name="scrim_bottom_alpha64" width="2" height="290"/>
         <image name="scrim_top_alpha32" width="2" height="112"/>
         <image name="switch_camera_shadow_48" width="48" height="48"/>

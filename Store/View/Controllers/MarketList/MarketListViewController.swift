@@ -31,7 +31,9 @@ class MarketListViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destination = segueHelper.selectCity(segue: segue)?.destination
+        if let destination = segueHelper.selectCity(
+            segue: segue
+        )?.destination
         {
             destination.initialInfo = sender as? ChooseCityLeaf.Model.InitialInfo
             destination.selectCity = .init { [weak self] city in
@@ -39,10 +41,18 @@ class MarketListViewController: UIViewController {
             }
             return
         }
-        if let destination = segueHelper.groupProducts(segue: segue)?.destination
+        if let destination = segueHelper.groupProducts(
+            segue: segue
+        )?.destination
         {
             destination.initialInfo = sender as? ProductsListLeaf.Model.InitialInfo
             return
+        }
+        if let destination = segueHelper.camera(
+            segue: segue
+        )?.destination
+        {
+            destination.functionality = .qrReader
         }
     }
     

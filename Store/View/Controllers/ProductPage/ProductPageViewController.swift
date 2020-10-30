@@ -43,7 +43,13 @@ class ProductPageViewController: UIViewController {
         }
     }
     
-    private var initial = true
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = R.segue.productPageViewController.story(segue: segue)?
+            .destination
+        {
+            destination.functionality = .recorder
+        }
+    }
     
     private func render(
         props: ProductPageLeaf.Props,
