@@ -23,9 +23,9 @@ class AuthViewController: UIViewController {
             executeOnMainQueue {
                 switch result {
                 case .success:
-                    self?.navigationController?.viewControllers = [
-                        R.storyboard.main.marketListViewController()!
-                    ]
+                    self?.navigationController?.replaceTopController(
+                        with: R.storyboard.main.marketListViewController()!
+                    )
                     
                 case .failure:
                     self?.authorize()

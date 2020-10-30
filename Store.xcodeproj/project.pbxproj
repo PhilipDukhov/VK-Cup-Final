@@ -27,8 +27,13 @@
 		D51E8459254C498200378BF9 /* GroupAndProducts.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E8458254C498200378BF9 /* GroupAndProducts.swift */; };
 		D51E845C254C4AB000378BF9 /* ProductPageApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E845B254C4AB000378BF9 /* ProductPageApiManager.swift */; };
 		D51E845F254C575900378BF9 /* UIView+animateWithCondition.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E845E254C575900378BF9 /* UIView+animateWithCondition.swift */; };
-		D51E8463254C58D400378BF9 /* QRCodeReaderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E8462254C58D400378BF9 /* QRCodeReaderViewController.swift */; };
 		D51E8468254C594D00378BF9 /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E8467254C594D00378BF9 /* PreviewView.swift */; };
+		D51E846B254C5AB600378BF9 /* CaptureButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E846A254C5AB600378BF9 /* CaptureButton.swift */; };
+		D51E846E254C5B0400378BF9 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E846D254C5B0400378BF9 /* CameraViewController.swift */; };
+		D51E8473254C5D6F00378BF9 /* CoreGraphics+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E8472254C5D6F00378BF9 /* CoreGraphics+Extensions.swift */; };
+		D51E8476254C649100378BF9 /* NSError+description.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E8475254C649100378BF9 /* NSError+description.swift */; };
+		D51E8479254C65B300378BF9 /* Bundle+displayName.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E8478254C65B300378BF9 /* Bundle+displayName.swift */; };
+		D51E847C254C859900378BF9 /* UINavigationController+replaceTopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E847B254C859900378BF9 /* UINavigationController+replaceTopController.swift */; };
 		D523C0F2254857A50035985A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D523C0F1254857A50035985A /* AppDelegate.swift */; };
 		D523C0F6254857A50035985A /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D523C0F5254857A50035985A /* AuthViewController.swift */; };
 		D523C0F9254857A50035985A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D523C0F7254857A50035985A /* Main.storyboard */; };
@@ -93,8 +98,13 @@
 		D51E8458254C498200378BF9 /* GroupAndProducts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupAndProducts.swift; sourceTree = "<group>"; };
 		D51E845B254C4AB000378BF9 /* ProductPageApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPageApiManager.swift; sourceTree = "<group>"; };
 		D51E845E254C575900378BF9 /* UIView+animateWithCondition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+animateWithCondition.swift"; sourceTree = "<group>"; };
-		D51E8462254C58D400378BF9 /* QRCodeReaderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeReaderViewController.swift; sourceTree = "<group>"; };
 		D51E8467254C594D00378BF9 /* PreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		D51E846A254C5AB600378BF9 /* CaptureButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureButton.swift; sourceTree = "<group>"; };
+		D51E846D254C5B0400378BF9 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		D51E8472254C5D6F00378BF9 /* CoreGraphics+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreGraphics+Extensions.swift"; sourceTree = "<group>"; };
+		D51E8475254C649100378BF9 /* NSError+description.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSError+description.swift"; sourceTree = "<group>"; };
+		D51E8478254C65B300378BF9 /* Bundle+displayName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+displayName.swift"; sourceTree = "<group>"; };
+		D51E847B254C859900378BF9 /* UINavigationController+replaceTopController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+replaceTopController.swift"; sourceTree = "<group>"; };
 		D523C0EE254857A50035985A /* Store.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Store.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D523C0F1254857A50035985A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D523C0F5254857A50035985A /* AuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
@@ -172,6 +182,7 @@
 		D51AA2FC254AE7BB0087CBF4 /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
+				D51E846A254C5AB600378BF9 /* CaptureButton.swift */,
 				D51AA2FD254AE7CD0087CBF4 /* ActionButton.swift */,
 				D51E8467254C594D00378BF9 /* PreviewView.swift */,
 				D51E8445254B73BC00378BF9 /* SelectableButton.swift */,
@@ -223,12 +234,12 @@
 			path = ProductPage;
 			sourceTree = "<group>";
 		};
-		D51E8461254C58A900378BF9 /* QRCodeReader */ = {
+		D51E8461254C58A900378BF9 /* CameraViewController */ = {
 			isa = PBXGroup;
 			children = (
-				D51E8462254C58D400378BF9 /* QRCodeReaderViewController.swift */,
+				D51E846D254C5B0400378BF9 /* CameraViewController.swift */,
 			);
-			path = QRCodeReader;
+			path = CameraViewController;
 			sourceTree = "<group>";
 		};
 		D523C0E5254857A50035985A = {
@@ -309,7 +320,7 @@
 				D5B5D95A2549046F00A73809 /* MarketList */,
 				D51AA323254B1F880087CBF4 /* ProductsList */,
 				D51E8439254B68CE00378BF9 /* ProductPage */,
-				D51E8461254C58A900378BF9 /* QRCodeReader */,
+				D51E8461254C58A900378BF9 /* CameraViewController */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -342,6 +353,8 @@
 		D5F2070D25490C7B00F9B71F /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				D51E8472254C5D6F00378BF9 /* CoreGraphics+Extensions.swift */,
+				D51E847B254C859900378BF9 /* UINavigationController+replaceTopController.swift */,
 				D5F2070E25490C9E00F9B71F /* UIImageView+setImageUrl.swift */,
 				D51E845E254C575900378BF9 /* UIView+animateWithCondition.swift */,
 				D5F207E02549D9F400F9B71F /* Constants.swift */,
@@ -355,6 +368,8 @@
 			isa = PBXGroup;
 			children = (
 				D5F207272549104D00F9B71F /* ObjectAssociation.swift */,
+				D51E8475254C649100378BF9 /* NSError+description.swift */,
+				D51E8478254C65B300378BF9 /* Bundle+displayName.swift */,
 				D5F207DD2549D8B700F9B71F /* HasApply.swift */,
 				D5F207DA2549D5EB00F9B71F /* Action.swift */,
 				D5F207B72549BD1700F9B71F /* executeOnMainQueue.swift */,
@@ -600,6 +615,7 @@
 				D5F207E12549D9F400F9B71F /* Constants.swift in Sources */,
 				D5B5D9382548B91900A73809 /* PhotoSize.swift in Sources */,
 				D5F207B82549BD1700F9B71F /* executeOnMainQueue.swift in Sources */,
+				D51E847C254C859900378BF9 /* UINavigationController+replaceTopController.swift in Sources */,
 				D5B5D9432548C66700A73809 /* City.swift in Sources */,
 				D51E8468254C594D00378BF9 /* PreviewView.swift in Sources */,
 				D5F207472549175000F9B71F /* Runtime.swift in Sources */,
@@ -619,6 +635,7 @@
 				D5B5D9482548DA3F00A73809 /* Photo.swift in Sources */,
 				D5F207B12549B81E00F9B71F /* CollectionCellDescriptor.swift in Sources */,
 				D51E8459254C498200378BF9 /* GroupAndProducts.swift in Sources */,
+				D51E8476254C649100378BF9 /* NSError+description.swift in Sources */,
 				D51E843E254B68F900378BF9 /* ProductPageDescriptionCell.swift in Sources */,
 				D51AA31E254B0CC50087CBF4 /* ProductsListApiManager.swift in Sources */,
 				D51E8456254C483800378BF9 /* LinkResolverApiManager.swift in Sources */,
@@ -630,6 +647,9 @@
 				D5B5D9552548FDD500A73809 /* MarketListViewController.swift in Sources */,
 				D5F207AE2549B80000F9B71F /* CollectionDescriptiveModel.swift in Sources */,
 				D51E845F254C575900378BF9 /* UIView+animateWithCondition.swift in Sources */,
+				D51E846B254C5AB600378BF9 /* CaptureButton.swift in Sources */,
+				D51E8473254C5D6F00378BF9 /* CoreGraphics+Extensions.swift in Sources */,
+				D51E846E254C5B0400378BF9 /* CameraViewController.swift in Sources */,
 				D5B5D8F725485B6500A73809 /* R.generated.swift in Sources */,
 				D51E845C254C4AB000378BF9 /* ProductPageApiManager.swift in Sources */,
 				D5B5D9582548FEF100A73809 /* VkAuthManager.swift in Sources */,
@@ -639,13 +659,13 @@
 				D5F2074B25491A9700F9B71F /* Cancellable.swift in Sources */,
 				D51AA2F6254ADFB00087CBF4 /* Identifiable.swift in Sources */,
 				D5F2076E2549AE6200F9B71F /* MarketListLeaf.swift in Sources */,
+				D51E8479254C65B300378BF9 /* Bundle+displayName.swift in Sources */,
 				D51AA302254AE9140087CBF4 /* ChooseCityCell.swift in Sources */,
 				D51E8446254B73BC00378BF9 /* SelectableButton.swift in Sources */,
 				D5B5D93B2548BA8100A73809 /* ResponseItems.swift in Sources */,
 				D5F207BE2549C8E500F9B71F /* UIColor+hex.swift in Sources */,
 				D5F2070F25490C9E00F9B71F /* UIImageView+setImageUrl.swift in Sources */,
 				D5B5D95D2549048100A73809 /* MarketListCellModel.swift in Sources */,
-				D51E8463254C58D400378BF9 /* QRCodeReaderViewController.swift in Sources */,
 				D5F207ED254A144B00F9B71F /* ChooseCityViewController.swift in Sources */,
 				D51AA31A254B04BC0087CBF4 /* URL+appendingQueryParameters.swift in Sources */,
 			);

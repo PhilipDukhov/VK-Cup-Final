@@ -7,6 +7,12 @@
 
 import UIKit
 
+extension UIColor {
+    static let vkBlue: UIColor = .init(rgb: 0x3F8AE0)
+    static let captureProgress: UIColor = .init(rgb: 0xFC334B)
+    static let captureRing: UIColor = .init(rgb: 0xAAABA9)
+}
+
 extension CGFloat {
     static let horizontalInset: Self = 16
 }

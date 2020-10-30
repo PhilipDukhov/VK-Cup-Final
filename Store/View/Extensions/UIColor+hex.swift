@@ -25,6 +25,4 @@ public extension UIColor {
             a: a
         )
     }
-    
-    static let vkBlue: UIColor = .init(rgb: 0x3F8AE0)
 }

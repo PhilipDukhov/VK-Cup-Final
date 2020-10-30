@@ -8,6 +8,26 @@
 import UIKit
 
 extension UIView {
+    @IBInspectable var borderColor: UIColor? {
+        get {
+            guard let borderColor = layer.borderColor else { return nil }
+            return .init(cgColor: borderColor)
+        }
+        set {
+            layer.borderColor = newValue?.cgColor
+        }
+    }
+    
+    func round(corners: UIRectCorner, radius: CGFloat) {
+        let mask = CAShapeLayer()
+        mask.path = UIBezierPath(roundedRect: bounds,
+                                 byRoundingCorners: corners,
+                                 cornerRadii: CGSize(width: radius, height: radius)).cgPath
+        layer.mask = mask
+    }
+}
+
+extension UIView {
     static func animate(
         withCondition condition: Bool,
         duration: TimeInterval,

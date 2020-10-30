@@ -13,7 +13,7 @@ class LinkResolverApiManager {
     
     func getProduct(
         productId: String,
-        completion: @escaping (Result<GroupAndProducts, BaseApiManager.Error>) -> Void
+        completion: @escaping (Result<Product, BaseApiManager.Error>) -> Void
     ) {
         baseApiManager.sendHandleAndParseFirst(
             VK.API.Market.getById([
@@ -25,20 +25,26 @@ class LinkResolverApiManager {
         )
     }
     
-    func getGroupAndProducts(
-        groupId: String,
-        completion: @escaping (Result<GroupAndProducts, BaseApiManager.Error>) -> Void
+    func getGroupIfHasMarket(
+        groupId: Int,
+        completion: @escaping (Result<Group, BaseApiManager.Error>) -> Void
     ) {
         baseApiManager.sendHandleAndParseFirst(
             VK.API.Custom.execute(
                 code: """
-                    var group = API.groups.getById({"group_id": "\(groupId)"})[0];
-                    return [{
-                        "group": group,
-                        "products": API.market.get({
-                                    "owner_id": "-" + group.id,
-                                })
-                    }];
+                    var group = API.groups.getById({
+                        "group_id": "\(groupId)",
+                        "fields": "market"
+                    })[0];
+                    if (group.market.enabled==0||
+                        API.market.get({
+                            "owner_id": -group.id,
+                            "count": 0,
+                        }).count==0
+                    ) {
+                        return null;
+                    }
+                    return [group];
                 """),
             container: .response,
             completion: completion

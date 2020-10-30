@@ -63,13 +63,13 @@
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="033-ft-gDI">
                                                     <rect key="frame" x="76" y="12.5" width="322" height="35.5"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ad-C7-RWc">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9ad-C7-RWc">
                                                             <rect key="frame" x="0.0" y="0.0" width="322" height="19.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                             <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="On6-zD-nsF">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="On6-zD-nsF">
                                                             <rect key="frame" x="0.0" y="19.5" width="322" height="16"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                             <color key="textColor" red="0.56470588235294117" green="0.58039215686274515" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -116,7 +116,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="8xN-4y-rqz">
-                        <barButtonItem key="rightBarButtonItem" title="QR" id="365-FK-Puh"/>
+                        <barButtonItem key="rightBarButtonItem" title="QR" id="365-FK-Puh">
+                            <connections>
+                                <segue destination="wj8-gv-oUG" kind="show" id="DDf-Zh-Xt4"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="eMa-Ae-91c" id="VQ1-Fr-KKa"/>
@@ -498,8 +502,8 @@
         <!--Camera View Controller-->
         <scene sceneID="057-vd-Jsu">
             <objects>
-                <viewController id="wj8-gv-oUG" customClass="CameraViewController" customModule="VK_Cup_C_Camera" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="NMW-Xq-KRQ" customClass="PreviewView" customModule="VK_Cup_C_Camera" customModuleProvider="target">
+                <viewController id="wj8-gv-oUG" customClass="CameraViewController" customModule="Store" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NMW-Xq-KRQ" customClass="PreviewView" customModule="Store" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -540,52 +544,63 @@
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="scrim_bottom_alpha64" translatesAutoresizingMaskIntoConstraints="NO" id="tVg-oV-vg9">
                                 <rect key="frame" x="0.0" y="606" width="414" height="290"/>
                             </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eGg-xm-qWw">
-                                <rect key="frame" x="97" y="766" width="220" height="48"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eGg-xm-qdw">
+                                <rect key="frame" x="97" y="742" width="220" height="96"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F7J-s4-rlI">
-                                        <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eGg-xm-qWw">
+                                        <rect key="frame" x="0.0" y="24" width="220" height="48"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F7J-s4-rlI">
+                                                <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="F7J-s4-rlI" secondAttribute="height" id="b28-zg-8n4"/>
+                                                    <constraint firstAttribute="height" constant="48" id="fjA-Hi-eXT"/>
+                                                </constraints>
+                                                <state key="normal" title="Button" image="flash_off_outline_shadow_48"/>
+                                                <state key="selected" image="flash_shadow_48"/>
+                                                <connections>
+                                                    <action selector="toggleFlash" destination="wj8-gv-oUG" eventType="touchUpInside" id="ewr-fk-DW8"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UQw-wp-wHA">
+                                                <rect key="frame" x="172" y="0.0" width="48" height="48"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="48" id="01O-Fc-x4f"/>
+                                                    <constraint firstAttribute="width" secondItem="UQw-wp-wHA" secondAttribute="height" id="I31-7F-4mA"/>
+                                                </constraints>
+                                                <state key="normal" image="switch_camera_shadow_48"/>
+                                                <connections>
+                                                    <action selector="toggleCamera" destination="wj8-gv-oUG" eventType="touchUpInside" id="gfT-vd-nAB"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="F7J-s4-rlI" secondAttribute="height" id="b28-zg-8n4"/>
-                                            <constraint firstAttribute="height" constant="48" id="fjA-Hi-eXT"/>
+                                            <constraint firstItem="F7J-s4-rlI" firstAttribute="top" secondItem="eGg-xm-qWw" secondAttribute="top" id="2Vi-PW-Ruo"/>
+                                            <constraint firstAttribute="bottom" secondItem="F7J-s4-rlI" secondAttribute="bottom" id="6H6-BR-h1v"/>
+                                            <constraint firstAttribute="bottom" secondItem="UQw-wp-wHA" secondAttribute="bottom" id="OJX-iT-52e"/>
+                                            <constraint firstItem="F7J-s4-rlI" firstAttribute="leading" secondItem="eGg-xm-qWw" secondAttribute="leading" id="WFZ-Mn-kEB"/>
+                                            <constraint firstAttribute="trailing" secondItem="UQw-wp-wHA" secondAttribute="trailing" id="ntD-UU-6U2"/>
+                                            <constraint firstItem="UQw-wp-wHA" firstAttribute="top" secondItem="eGg-xm-qWw" secondAttribute="top" id="vif-Od-pHq"/>
                                         </constraints>
-                                        <state key="normal" title="Button" image="flash_off_outline_shadow_48"/>
-                                        <state key="selected" image="flash_shadow_48"/>
-                                        <connections>
-                                            <action selector="toggleFlash" destination="wj8-gv-oUG" eventType="touchUpInside" id="ewr-fk-DW8"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UQw-wp-wHA">
-                                        <rect key="frame" x="172" y="0.0" width="48" height="48"/>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBf-0N-rVW" customClass="CaptureButton" customModule="Store" customModuleProvider="target">
+                                        <rect key="frame" x="62" y="0.0" width="96" height="96"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="48" id="01O-Fc-x4f"/>
-                                            <constraint firstAttribute="width" secondItem="UQw-wp-wHA" secondAttribute="height" id="I31-7F-4mA"/>
+                                            <constraint firstAttribute="height" constant="96" id="ZIg-nL-muj"/>
+                                            <constraint firstAttribute="width" secondItem="kBf-0N-rVW" secondAttribute="height" id="x16-3h-jpL"/>
                                         </constraints>
-                                        <state key="normal" image="switch_camera_shadow_48"/>
                                         <connections>
-                                            <action selector="toggleCamera" destination="wj8-gv-oUG" eventType="touchUpInside" id="gfT-vd-nAB"/>
+                                            <outlet property="delegate" destination="wj8-gv-oUG" id="4Ob-mo-ODI"/>
                                         </connections>
-                                    </button>
+                                    </view>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="F7J-s4-rlI" firstAttribute="top" secondItem="eGg-xm-qWw" secondAttribute="top" id="2Vi-PW-Ruo"/>
-                                    <constraint firstAttribute="bottom" secondItem="F7J-s4-rlI" secondAttribute="bottom" id="6H6-BR-h1v"/>
-                                    <constraint firstAttribute="bottom" secondItem="UQw-wp-wHA" secondAttribute="bottom" id="OJX-iT-52e"/>
-                                    <constraint firstItem="F7J-s4-rlI" firstAttribute="leading" secondItem="eGg-xm-qWw" secondAttribute="leading" id="WFZ-Mn-kEB"/>
-                                    <constraint firstAttribute="trailing" secondItem="UQw-wp-wHA" secondAttribute="trailing" id="ntD-UU-6U2"/>
-                                    <constraint firstItem="UQw-wp-wHA" firstAttribute="top" secondItem="eGg-xm-qWw" secondAttribute="top" id="vif-Od-pHq"/>
+                                    <constraint firstItem="kBf-0N-rVW" firstAttribute="top" secondItem="eGg-xm-qdw" secondAttribute="top" id="0dN-f0-Xr9"/>
+                                    <constraint firstAttribute="bottom" secondItem="kBf-0N-rVW" secondAttribute="bottom" id="85n-dp-nVg"/>
+                                    <constraint firstAttribute="trailing" secondItem="eGg-xm-qWw" secondAttribute="trailing" id="Nec-WV-8jQ"/>
+                                    <constraint firstItem="eGg-xm-qWw" firstAttribute="leading" secondItem="eGg-xm-qdw" secondAttribute="leading" id="dI7-cM-8KT"/>
                                 </constraints>
-                            </view>
-                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kBf-0N-rVW" customClass="CaptureButton" customModule="VK_Cup_C_Camera" customModuleProvider="target">
-                                <rect key="frame" x="159" y="742" width="96" height="96"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="96" id="ZIg-nL-muj"/>
-                                    <constraint firstAttribute="width" secondItem="kBf-0N-rVW" secondAttribute="height" id="x16-3h-jpL"/>
-                                </constraints>
-                                <connections>
-                                    <outlet property="delegate" destination="wj8-gv-oUG" id="4Ob-mo-ODI"/>
-                                </connections>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="QeD-Fj-fjA"/>
@@ -614,6 +629,7 @@
                     <navigationItem key="navigationItem" id="YF8-Pz-796"/>
                     <connections>
                         <outlet property="captureButton" destination="kBf-0N-rVW" id="ddu-bx-OwL"/>
+                        <outlet property="captureControlsContainer" destination="eGg-xm-qdw" id="XIg-47-ocp"/>
                         <outlet property="configButtonsContainer" destination="eGg-xm-qWw" id="2am-yv-Agq"/>
                         <outlet property="flashButton" destination="F7J-s4-rlI" id="kyK-em-tsg"/>
                         <outlet property="noCameraAccessView" destination="AIu-vV-XSp" id="9CF-TH-t3x"/>
