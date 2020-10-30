@@ -7,35 +7,51 @@
 
 import Foundation
 
+private typealias Msg = MarketListLeaf.Msg
+private typealias Model = MarketListLeaf.Model
+
 enum MarketListLeaf {
     struct Model {
+        var userInfo: UserInfo?
         var selectedCountry: Country?
         var selectedCity: City?
         var marketQuery: String = ""
         var groups: [Group] = []
         var error: Error?
         
-        let apiManager = VkApiManager()
+        var navigationMsg: NavigationMsg?
+        
+        let apiManager = MarketListApiManager()
     }
     
     enum Msg {
-        case setError(Error)
-        case clearError
+        case setError(Error?)
         case requestUserInfo
         case updateUserInfo(UserInfo)
+        case updateCountry(Country)
+        case updateCity(City)
+        case updateCityFromPicker(City)
         case updateGroups([Group])
         case updateMarketQuery(String)
         case requestMarketGroupsUpdate
+        case chooseCity
+        case selectGroup(Group)
+    }
+    
+    enum NavigationMsg {
+        case chooseCity(ChooseCityLeaf.Model.InitialInfo)
+        case selectGroup(ProductsListLeaf.Model.InitialInfo)
     }
     
     struct Props {
-        let cityName: String?
+        let city: City?
         let marketQuery: String
         let groups: [Group]
-        var error: Error?
+        let navigationMsg: NavigationMsg?
+        let error: Error?
     }
     
-    static let initial = { () -> (Model, Effect<Msg>) in
+    static let initial = { () -> (Model, Effect<Msg>?) in
         (Model(), { $0(.requestUserInfo) })
     }
     
@@ -47,9 +63,26 @@ enum MarketListLeaf {
             effect = model.getCurrentUserInfoEffect
             
         case .updateUserInfo(let userInfo):
+            newModel.userInfo = userInfo
             newModel.selectedCountry = userInfo.country
             newModel.selectedCity = userInfo.city
             effect = { $0(.requestMarketGroupsUpdate) }
+            
+        case .updateCountry(let country):
+            newModel.selectedCountry = country
+            effect = { $0(.requestMarketGroupsUpdate) }
+            
+        case .updateCityFromPicker(let city):
+            newModel.navigationMsg = nil
+            newModel.groups = []
+            fallthrough
+            
+        case .updateCity(let city):
+            if model.selectedCity?.id != city.id {
+                newModel.groups = []
+            }
+            newModel.selectedCity = city
+            effect = model.afterCityUpdatedEffect(city: city)
             
         case .requestMarketGroupsUpdate:
             guard let country = model.selectedCountry else {
@@ -68,30 +101,55 @@ enum MarketListLeaf {
         case .setError(let error):
             newModel.error = error
             
-        case .clearError:
-            newModel.error = nil
-            
         case .updateGroups(let groups):
             newModel.groups = groups
             
         case .updateMarketQuery(let marketQuery):
             newModel.marketQuery = marketQuery
+        case .chooseCity:
+            newModel.navigationMsg = .chooseCity(
+                .init(
+                    userInfo: model.userInfo!,
+                    selectedCountry: model.selectedCountry!,
+                    selectedCity: model.selectedCity!
+                )
+            )
+            
+        case .selectGroup(let group):
+            newModel.navigationMsg = .selectGroup(
+                .init(
+                    group: group
+                )
+            )
         }
         return (newModel, effect)
     }
     
-    static let view = { (model: Model) -> Props in
-        .init(
-            cityName: model.selectedCity?.title,
-            marketQuery: model.marketQuery,
-            groups: model.groups,
-            error: model.error
+    static func runtime(
+        render: @escaping Runtime<Model, Msg>.Render
+    ) -> Any {
+        Runtime(
+            initial: initial,
+            update: update,
+            render: render
         )
     }
 }
 
-extension MarketListLeaf.Model {
-    fileprivate var getCurrentUserInfoEffect: Effect<MarketListLeaf.Msg> {
+extension Model: ModelViewable {
+    var buildProps: MarketListLeaf.Props {
+        .init(
+            city: selectedCity,
+            marketQuery: marketQuery,
+            groups: groups,
+            navigationMsg: navigationMsg,
+            error: error
+        )
+    }
+}
+
+extension Model {
+    fileprivate var getCurrentUserInfoEffect: Effect<Msg> {
         { dispatch in
             apiManager.getCurrentUserLocationInfo { result in
                 result.get(
@@ -103,20 +161,13 @@ extension MarketListLeaf.Model {
         }
     }
     
-    fileprivate var getDefaultCountryEffect: Effect<MarketListLeaf.Msg> {
+    fileprivate var getDefaultCountryEffect: Effect<Msg> {
         { dispatch in
             apiManager.getDefaultCountry { result in
                 result.get(
                     errorDispatch: dispatch
                 ) { country in
-                    dispatch(
-                        .updateUserInfo(
-                            .init(
-                                country: country,
-                                city: nil
-                            )
-                        )
-                    )
+                    dispatch(.updateCountry(country))
                 }
             }
         }
@@ -124,7 +175,7 @@ extension MarketListLeaf.Model {
     
     fileprivate func getDefaultCityEffect(
         country: Country
-    ) -> Effect<MarketListLeaf.Msg> {
+    ) -> Effect<Msg> {
         { dispatch in
             apiManager.getDefaultCity(
                 country: country
@@ -132,14 +183,21 @@ extension MarketListLeaf.Model {
                 result.get(
                     errorDispatch: dispatch
                 ) { city in
-                    dispatch(
-                        .updateUserInfo(
-                            .init(
-                                country: country,
-                                city: city
-                            )
-                        )
-                    )
+                    dispatch(.updateCity(city))
+                }
+            }
+        }
+    }
+    
+    fileprivate func afterCityUpdatedEffect(
+        city: City
+    ) -> Effect<Msg> {
+        { dispatch in
+            dispatch(.requestMarketGroupsUpdate)
+            if city.inflectedTitle == nil {
+                apiManager.localize(city: city) { result in
+                    guard let city = try? result.get() else { return }
+                    dispatch(.updateCity(city))
                 }
             }
         }
@@ -148,7 +206,7 @@ extension MarketListLeaf.Model {
     fileprivate func updateMarketGroupListEffect(
         query: String,
         city: City
-    ) -> Effect<MarketListLeaf.Msg> {
+    ) -> Effect<Msg> {
         { dispatch in
             apiManager.getMarketGroups(
                 query: query,
@@ -167,8 +225,8 @@ extension MarketListLeaf.Model {
 }
 
 extension Result {
-    func get(
-        errorDispatch: Dispatch<MarketListLeaf.Msg>,
+    fileprivate func get(
+        errorDispatch: Dispatch<Msg>,
         successCompletion: (Success) -> Void)
     {
         switch self {

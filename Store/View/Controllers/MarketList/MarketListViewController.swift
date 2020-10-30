@@ -6,14 +6,16 @@
 //
 
 import UIKit
+import Rswift
 
 class MarketListViewController: UIViewController {
-    private var runtime: Any?
-    
     @IBOutlet private var collectionView: UICollectionView!
-//    @IBOutlet var navigationTitleView: UIView!
     
+    private var runtime: Any?
+    private var dispatch: Dispatch<MarketListLeaf.Msg>?
     private var collectionViewWrapper: CollectionViewWrapper!
+    private let titleView = MarketListTitleView()
+    private let segueHelper = R.segue.marketListViewController.self
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,20 +23,42 @@ class MarketListViewController: UIViewController {
             collectionView: collectionView,
             sections: [.marketListSection()]
         )
-        runtime = Runtime(
-            initial: MarketListLeaf.initial,
-            update: MarketListLeaf.update,
-            view: MarketListLeaf.view
-        ) { [weak self] in
+        titleView.frame = .init(origin: .zero, size: .init(width: 300, height: 100))
+        navigationItem.titleView = titleView
+        runtime = MarketListLeaf.runtime { [weak self] in
             self?.render(props: $0, dispatch: $1)
         }
-        view.backgroundColor = .gray
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destination = segueHelper.selectCity(segue: segue)?.destination
+        {
+            destination.initialInfo = sender as? ChooseCityLeaf.Model.InitialInfo
+            destination.selectCity = .init { [weak self] city in
+                self?.dispatch?(.updateCityFromPicker(city))
+            }
+            return
+        }
+        if let destination = segueHelper.groupProducts(segue: segue)?.destination
+        {
+            destination.initialInfo = sender as? ProductsListLeaf.Model.InitialInfo
+            return
+        }
     }
     
     private func render(
         props: MarketListLeaf.Props,
-        dispatch: Dispatch<MarketListLeaf.Msg>
+        dispatch: @escaping Dispatch<MarketListLeaf.Msg>
     ) {
+        self.dispatch = dispatch
+        titleView.props = props.city.map { city in
+            .init(
+                title: city.marketsListDescription,
+                action: .init {
+                    dispatch(.chooseCity)
+                }
+            )
+        }
         collectionViewWrapper.sections = [
             .marketListSection(
                 rows: props.groups.map { group in
@@ -48,6 +72,28 @@ class MarketListViewController: UIViewController {
                 }
             )
         ]
+        collectionViewWrapper.didSelect = { _, indexPath in
+            dispatch(.selectGroup(props.groups[indexPath.item]))
+        }
+        props.navigationMsg.mapOnMain(handleNavigationMsg)
+        props.error.map { print($0) }
+    }
+    
+    private func handleNavigationMsg(
+        navigationMsg: MarketListLeaf.NavigationMsg
+    ) {
+        switch navigationMsg {
+        case .chooseCity(let initialInfo):
+            performSegue(
+                withIdentifier: segueHelper.selectCity,
+                sender: initialInfo
+            )
+        case .selectGroup(let initialInfo):
+            performSegue(
+                withIdentifier: segueHelper.groupProducts,
+                sender: initialInfo
+            )
+        }
     }
 }
 
@@ -62,14 +108,22 @@ extension Group.Visibility {
     }
 }
 
+extension City {
+    fileprivate var marketsListDescription: String {
+        if let inflectedTitle = inflectedTitle {
+            return "Магазины в \(inflectedTitle)"
+        } else {
+            return "Магазины в городе \(title)"
+        }
+    }
+}
+
 extension CollectionViewWrapper.Section {
     fileprivate static func marketListSection(
         rows: [CollectionDescriptiveModel] = []
     ) -> Self {
         .init(
-            numberOfColumns: 1,
-            estimatedHeight: 60,
-            rows: rows
+            items: rows
         )
     }
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 class Price: Codable {
-    struct Currency: Codable {
+    struct Currency: Codable, Identifiable {
         let id: Int
         let name: String
     }

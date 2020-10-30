@@ -10,7 +10,6 @@ import UIKit
 extension UIImageView {
     private static let dataTaskAssociation = ObjectAssociation<URLSessionDataTask>()
     private static let urlAssociation = ObjectAssociation<NSURL>()
-    private static let session = URLSession.shared
     
     private var url: URL? {
         get { Self.urlAssociation[self] as URL? }
@@ -24,13 +23,22 @@ extension UIImageView {
         }
     }
     
-    func setImage(url: URL) {
+    func setImage(photoSizes: PhotoSizes?) {
+        setImage(
+            url: photoSizes?
+                .bestQualityPhoto(forContainer: bounds.size)?
+                .url
+        )
+    }
+    
+    func setImage(url: URL?) {
         if self.url == url {
             return
         }
         image = nil
         backgroundColor = UIColor(rgb: 0xEBECF0)
         self.url = url
+        guard let url = url else { return }
         let dataTask = URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
             guard
                 let data = data,
@@ -39,7 +47,7 @@ extension UIImageView {
                 self?.url = nil
                 return
             }
-            DispatchQueue.main.async {
+            executeOnMainQueue {
                 self?.backgroundColor = .clear
                 self?.image = image
             }

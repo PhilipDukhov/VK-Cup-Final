@@ -10,7 +10,7 @@ import SwiftyVK
 
 class VkAuthManager {
     func authorize(
-        completion: @escaping (Result<Void, VkApiManager.Error>) -> Void
+        completion: @escaping (Result<Void, BaseApiManager.Error>) -> Void
     ) {
         let success = { (tokenInfo: [String: String]) in
             guard tokenInfo["user_id"] != nil else {

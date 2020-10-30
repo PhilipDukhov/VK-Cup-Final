@@ -104,8 +104,6 @@ struct PhotoSizes: Codable, Hashable {
                 $0.size.height > size.height * UIScreen.main.scale
         } ?? sizes.last
     }
-    
-    static let zero = Self(sizes: [])
 }
 
 extension Array where Element == PhotoSize {

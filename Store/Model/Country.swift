@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Country: Codable {
+struct Country: Codable, Identifiable {
     let id: Int
     let title: String
 }

@@ -17,28 +17,25 @@ class CollectionViewWrapper: NSObject {
         var minimumLineSpacing: CGFloat?
         var minimumInteritemSpacing: CGFloat?
         
-        var rows: [CollectionDescriptiveModel]
+        var items: [CollectionDescriptiveModel]
         
         init(
-            numberOfColumns: Int,
+            numberOfColumns: Int = 1,
             estimatedHeight: CGFloat? = nil,
             insets: UIEdgeInsets? = nil,
             minimumLineSpacing: CGFloat? = nil,
             minimumInteritemSpacing: CGFloat? = nil,
-            rows: [CollectionDescriptiveModel] = [])
+            items: [CollectionDescriptiveModel] = [])
         {
             self.numberOfColumns = numberOfColumns
             self.estimatedHeight = estimatedHeight
             self.insets = insets
             self.minimumLineSpacing = minimumLineSpacing
             self.minimumInteritemSpacing = minimumInteritemSpacing
-            self.rows = rows
+            self.items = items
         }
-        
-        static let zero = Self(numberOfColumns: 1)
     }
     
-    var stickyIndexPath: IndexPath?
     var didSelect: (CollectionDescriptiveModel, IndexPath) -> Void = { _, _ in }
     private var _sections: [Section] = []
     var sections: [Section] {
@@ -104,34 +101,52 @@ class CollectionViewWrapper: NSObject {
     }
 }
 
-extension CollectionViewWrapper:
-    UICollectionViewDataSource,
-    UICollectionViewDelegateFlowLayout
+extension CollectionViewWrapper: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        // swiftlint:disable:next force_cast
+        let flowLayout = collectionViewLayout as! UICollectionViewFlowLayout
+        let section = sections[indexPath.section]
+        let width = (
+            (collectionView.bounds.width - flowLayout.minimumInteritemSpacing * CGFloat(section.numberOfColumns - 1)
+            ) / CGFloat(section.numberOfColumns)
+                
+        ).rounded(.down)
+        return .init(
+            width: width,
+            height: item(for: indexPath).cellHeightForWidth(width)
+        )
+    }
+    
     func collectionView(
         _ collectionView: UICollectionView,
         insetsForItemsInSection section: Int
     ) -> UIEdgeInsets {
-        sections[section].insets ?? .init(top: 0, left: .defaultInset, bottom: 0, right: .defaultInset)
+        .zero//sections[section].insets ?? .init(top: 0, left: .defaultInset, bottom: 0, right: .defaultInset)
     }
     
     func collectionView(
         _ collectionView: UICollectionView,
         minimumLineSpacingForItemsInSection section: Int
     ) -> CGFloat {
-        sections[section].minimumLineSpacing ?? .defaultInset
+        0//sections[section].minimumLineSpacing ?? .defaultInset
     }
+    
     func collectionView(
         _ collectionView: UICollectionView,
         minimumInteritemSpacingForItemsInSection section: Int
     ) -> CGFloat {
-        sections[section].minimumInteritemSpacing ?? .defaultInset
+        0//sections[section].minimumInteritemSpacing ?? .defaultInset
     }
     
     private func item(
         for indexPath: IndexPath
     ) -> CollectionDescriptiveModel {
-        sections[indexPath.section].rows[indexPath.row]
+        sections[indexPath.section].items[indexPath.item]
     }
     
     func numberOfSections(
@@ -144,7 +159,7 @@ extension CollectionViewWrapper:
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        sections[section].rows.count
+        sections[section].items.count
     }
     
     func collectionView(
@@ -170,33 +185,6 @@ extension CollectionViewWrapper:
         didSelectItemAt indexPath: IndexPath
     ) {
         didSelect(item(for: indexPath), indexPath)
-    }
-    
-    func collectionView(
-        _ collectionView: UICollectionView,
-        heightForItemAtIndexPath indexPath: IndexPath,
-        width: CGFloat
-    ) -> CGFloat {
-        item(for: indexPath).cellHeightForWidth(width)
-    }
-    
-    func collectionView(
-        _ collectionView: UICollectionView,
-        estimatedHeightForSection section: Int,
-        width: CGFloat
-    ) -> CGFloat {
-        sections[section].estimatedHeight ?? 0
-    }
-    
-    func collectionView(
-        _ collectionView: UICollectionView,
-        numberOfColumnsForSection section: Int
-    ) -> Int {
-        sections[section].numberOfColumns
-    }
-    
-    func collectionView(stickyIndexPathForCollectionView: UICollectionView) -> IndexPath? {
-        stickyIndexPath
     }
 }
 

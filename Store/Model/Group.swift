@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Group: Codable {
+struct Group: Codable, Identifiable {
     enum Visibility: Int, Codable {
         case opened
         case closed

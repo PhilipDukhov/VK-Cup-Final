@@ -14,10 +14,19 @@ private let _runtimeQueue = DispatchQueue(label: "ElmRuntimeQueue")
 private let _renderQueue = DispatchQueue(label: "ElmRenderQueue")
 private let _effectQueue = DispatchQueue(label: "ElmEffectQueue")
 
-class Runtime<Model, Msg, Props> {
+protocol ModelViewable {
+    associatedtype Props
+    
+    var buildProps: Props { get }
+}
+
+class Runtime<Model: ModelViewable, Msg> {
+    typealias Initial = () -> (Model, Effect<Msg>?)
+    typealias Update = (Msg, Model) -> (Model, Effect<Msg>?)
+    typealias Render = (Model.Props, @escaping Dispatch<Msg>) -> Void
+    
     let update: (Msg, Model) -> (Model, Effect<Msg>?)
-    let view: (Model) -> Props
-    let render: (Props, Dispatch<Msg>) -> Void
+    let render: Render
     let runtimeQueue: DispatchQueue
     let renderQueue: DispatchQueue
     let effectQueue: DispatchQueue
@@ -25,16 +34,14 @@ class Runtime<Model, Msg, Props> {
     private var currentState: Model
     
     init(
-        initial: @escaping () -> (Model, Effect<Msg>),
-        update: @escaping (Msg, Model) -> (Model, Effect<Msg>?),
-        view: @escaping (Model) -> Props,
-        render: @escaping (Props, Dispatch<Msg>) -> Void,
+        initial: @escaping Initial,
+        update: @escaping Update,
+        render: @escaping Render,
         runtimeQueue: DispatchQueue = _runtimeQueue,
         renderQueue: DispatchQueue = _renderQueue,
         effectQueue: DispatchQueue = _effectQueue)
     {
         self.update = update
-        self.view = view
         self.render = render
         self.runtimeQueue = runtimeQueue
         self.renderQueue = renderQueue
@@ -55,10 +62,12 @@ class Runtime<Model, Msg, Props> {
     
     private func step(next: (Model, Effect<Msg>?)) {
         let (state, effect) = next
-        let props = view(state)
+        let props = state.buildProps
         currentState = state
         renderQueue.async { [self] in
-            render(props, dispatch)
+            render(props) { [weak self] in
+                self?.dispatch(msg: $0)
+            }
         }
         effect.map { effect in
             effectQueue.async { [self] in

@@ -7,7 +7,15 @@
 
 import Foundation
 
-struct City: Codable {
+struct City: Codable, Identifiable {
     let id: Int
     let title: String
+    
+    let inflectedTitle: String?
+    
+    init(city: City, inflectedTitle: String) {
+        id = city.id
+        title = city.title
+        self.inflectedTitle = inflectedTitle
+    }
 }
