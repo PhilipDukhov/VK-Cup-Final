@@ -163,11 +163,12 @@ class BasePrepareStoryViewController: UIViewController {
             (gestureRecognizer as? UIPinchGestureRecognizer).map {
                 productView.width = pinchStartWidth * $0.scale
             }
+            let x = productViewStartCenter.x - moveStartLocation.x + location.x
+            let y = productViewStartCenter.y - moveStartLocation.y + location.y
             productViewCenter = .init(
-                x: productViewStartCenter.x - moveStartLocation.x + location.x,
-                y: productViewStartCenter.y - moveStartLocation.y + location.y
+                x: x,
+                y: y
             )
-            
         default: break
         }
     }
