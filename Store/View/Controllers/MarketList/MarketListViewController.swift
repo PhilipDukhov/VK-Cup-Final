@@ -31,28 +31,23 @@ class MarketListViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destination = segueHelper.selectCity(
+        _ = segueHelper.selectCity(
             segue: segue
-        )?.destination
-        {
-            destination.initialInfo = sender as? ChooseCityLeaf.Model.InitialInfo
-            destination.selectCity = .init { [weak self] city in
+        )?.destination.apply {
+            $0.initialInfo = sender as? ChooseCityLeaf.Model.InitialInfo
+            $0.selectCity = .init { [weak self] city in
                 self?.dispatch?(.updateCityFromPicker(city))
             }
-            return
         }
-        if let destination = segueHelper.groupProducts(
+        ?? segueHelper.groupProducts(
             segue: segue
-        )?.destination
-        {
-            destination.initialInfo = sender as? ProductsListLeaf.Model.InitialInfo
-            return
+        )?.destination.apply {
+            $0.initialInfo = sender as? ProductsListLeaf.Model.InitialInfo
         }
-        if let destination = segueHelper.camera(
+        ?? segueHelper.camera(
             segue: segue
-        )?.destination
-        {
-            destination.functionality = .qrReader
+        )?.destination.apply {
+            $0.functionality = .qrReader
         }
     }
     

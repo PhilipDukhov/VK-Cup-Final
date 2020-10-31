@@ -6,10 +6,15 @@ platform :ios, ios_deployment_target
 target 'Store' do
   use_frameworks!
   
-  pod 'SwiftyVK'
+  pod 'SwiftyVK', :path => '../SwiftyVK' #git: => 'https://github.com/PhilipDukhov/SwiftyVK'
   pod 'R.swift.Library'
   pod 'R.swift'
   pod 'DeepDiff'
+  pod 'Alamofire'
+  
+  # 0.13.3 contains required bug fixes but not deployed to
+  # cocoapods correctly
+  pod 'Player', :git => 'https://github.com/piemonte/Player', :commit => '1758a0054b963618ab71cacf82628e441e5ca1b4'
 end
 
 post_install do |installer|

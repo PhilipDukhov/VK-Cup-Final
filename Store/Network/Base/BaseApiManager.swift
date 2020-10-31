@@ -14,6 +14,7 @@ class BaseApiManager {
         case urlRequestError(Swift.Error)
         
         case vkError(VKError)
+        case other(Swift.Error)
         
         static func with(vkError: VKError) -> Self {
             switch vkError {

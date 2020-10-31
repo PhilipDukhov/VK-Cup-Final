@@ -44,10 +44,10 @@ class ProductPageViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destination = R.segue.productPageViewController.story(segue: segue)?
-            .destination
-        {
-            destination.functionality = .recorder
+        R.segue.productPageViewController.story(
+            segue: segue
+        )?.destination.apply {
+            $0.functionality = .recorder(initialInfo.product)
         }
     }
     

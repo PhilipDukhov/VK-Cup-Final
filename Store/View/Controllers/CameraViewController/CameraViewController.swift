@@ -66,7 +66,7 @@ class CameraViewController: UIViewController {
     }
     enum Functionality {
         case qrReader
-        case recorder
+        case recorder(Product)
     }
     
     var functionality: Functionality = .qrReader
@@ -161,9 +161,14 @@ class CameraViewController: UIViewController {
                 isSessionRunning = session.isRunning
             }
         }
-        navigationController?.setNavigationBarHidden(
-            false, animated: animated
-        )
+        if !(navigationController?.topViewController
+                is BasePrepareStoryViewController)
+        {
+            navigationController?.setNavigationBarHidden(
+                false,
+                animated: animated
+            )
+        }
         super.viewWillDisappear(animated)
     }
     
@@ -177,68 +182,114 @@ class CameraViewController: UIViewController {
         case notAuthorized
         case configurationFailed
     }
-    
-    private let session = AVCaptureSession()
-    private var isSessionRunning = false
+
+    private let apiManager = LinkResolverApiManager()
     private let sessionQueue = DispatchQueue(label: "session queue")
     private var setupResult: SessionSetupResult = .success
-    @objc private dynamic var videoDeviceInput: AVCaptureDeviceInput!
+
+    private var isSessionRunning = false
+    private let session = AVCaptureSession()
+    private let photoOutput = AVCapturePhotoOutput()
+    private var videoDeviceInput: AVCaptureDeviceInput!
+
     private var qrDetectorLayers = [Link: CAShapeLayer]()
-    private let apiManager = LinkResolverApiManager()
     
     private func configureSession() {
         if setupResult != .success {
             return
         }
-        
         session.beginConfiguration()
         session.sessionPreset = .photo
-        
+        defer {
+            session.commitConfiguration()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
+                beginRecording()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [self] in
+                    endRecording()
+                }
+            }
+        }
         do {
-            let deviceType: AVCaptureDevice.DeviceType
-            if #available(iOS 10.2, *) {
-                deviceType = .builtInDualCamera
-            } else {
-                deviceType = .builtInTelephotoCamera
-            }
-            let variants: [(AVCaptureDevice.DeviceType, AVCaptureDevice.Position)] = [
-                (deviceType, .back),
-                (.builtInWideAngleCamera, .back),
-                (.builtInWideAngleCamera, .front),
-            ]
-            guard
-                let videoDevice = variants
-                    .compactMap({ deviceType, position in
-                        AVCaptureDevice.default(
-                            deviceType,
-                            for: .video,
-                            position: position
-                        )
-                    }).first
-            else {
-                throw NSError(description: "Default video device is unavailable.")
-            }
-            let videoDeviceInput = try AVCaptureDeviceInput(
-                device: videoDevice
-            )
-            
-            guard session.canAddInput(videoDeviceInput) else {
-                throw NSError(description: "Couldn't add video device input to the session.")
-            }
-            session.addInput(videoDeviceInput)
-            self.videoDeviceInput = videoDeviceInput
-            
-            executeOnMainQueue { [self] in
-                flashButton.alpha = videoDeviceInput.device.hasTorch ? 1 : 0
-                previewView.videoPreviewLayer.connection?.videoOrientation = .portrait
-            }
+            try addVideoInput()
         } catch {
             print("Couldn't create video device input: \(error)")
             setupResult = .configurationFailed
-            session.commitConfiguration()
             return
         }
+        switch functionality {
+        case .qrReader:
+            addQrReaderOutput()
+        case .recorder:
+            addAudioDevice()
+            addFileOutput()
+            addPhotoOutput()
+        }
+    }
+    
+    private func addVideoInput() throws {
+        let deviceType: AVCaptureDevice.DeviceType
+        if #available(iOS 10.2, *) {
+            deviceType = .builtInDualCamera
+        } else {
+            deviceType = .builtInTelephotoCamera
+        }
+        let variants: [(AVCaptureDevice.DeviceType, AVCaptureDevice.Position)] = [
+            (deviceType, .back),
+            (.builtInWideAngleCamera, .back),
+            (.builtInWideAngleCamera, .front),
+        ]
+        guard
+            let videoDevice = variants
+                .compactMap({ deviceType, position in
+                    AVCaptureDevice.default(
+                        deviceType,
+                        for: .video,
+                        position: position
+                    )
+                }).first
+        else {
+            throw NSError(description: "Default video device is unavailable.")
+        }
+        let newVideoInput = try AVCaptureDeviceInput(
+            device: videoDevice
+        )
         
+        guard session.canAddInput(newVideoInput) else {
+            throw NSError(description: "Couldn't add video device input to the session.")
+        }
+        session.addInput(newVideoInput)
+        videoDeviceInput = newVideoInput
+        
+        executeOnMainQueue { [self] in
+            flashButton.alpha = newVideoInput.device.hasTorch ? 1 : 0
+            previewView.videoPreviewLayer.connection?.videoOrientation = .portrait
+        }
+    }
+    
+    private func addPhotoOutput() {
+        guard session.canAddOutput(photoOutput) else { return }
+        session.addOutput(photoOutput)
+    }
+    
+    private func addFileOutput() {
+        let newMovieFileOutput = AVCaptureMovieFileOutput()
+        newMovieFileOutput.maxRecordedDuration = .init(seconds: Constants.maxRecordedDuration, preferredTimescale: 600)
+        
+        guard session.canAddOutput(newMovieFileOutput) else { return }
+        session.beginConfiguration()
+        session.addOutput(newMovieFileOutput)
+        session.sessionPreset = .high
+        if let connection = newMovieFileOutput.connection(with: .video) {
+            if connection.isVideoStabilizationSupported {
+                connection.preferredVideoStabilizationMode = .auto
+            }
+        }
+        session.commitConfiguration()
+        
+        movieFileOutput = newMovieFileOutput
+    }
+    
+    private func addAudioDevice() {
         do {
             let audioDevice = AVCaptureDevice.default(for: .audio)
             let audioDeviceInput = try AVCaptureDeviceInput(device: audioDevice!)
@@ -251,34 +302,16 @@ class CameraViewController: UIViewController {
         } catch {
             print("Could not create audio device input: \(error)")
         }
-        
-        let movieFileOutput = AVCaptureMovieFileOutput()
-        movieFileOutput.maxRecordedDuration = .init(seconds: Constants.maxRecordedDuration, preferredTimescale: 600)
-        
-        if session.canAddOutput(movieFileOutput) {
-            session.beginConfiguration()
-            session.addOutput(movieFileOutput)
-            session.sessionPreset = .high
-            if let connection = movieFileOutput.connection(with: .video) {
-                if connection.isVideoStabilizationSupported {
-                    connection.preferredVideoStabilizationMode = .auto
-                }
-            }
-            session.commitConfiguration()
-            
-            self.movieFileOutput = movieFileOutput
-        }
-        
+    }
+    
+    private func addQrReaderOutput() {
         let metadataOutput = AVCaptureMetadataOutput()
         
-        if session.canAddOutput(metadataOutput) {
-            session.addOutput(metadataOutput)
-            
-            metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-            metadataOutput.metadataObjectTypes = [.qr]
-        }
+        guard session.canAddOutput(metadataOutput) else { return }
+        session.addOutput(metadataOutput)
         
-        session.commitConfiguration()
+        metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+        metadataOutput.metadataObjectTypes = [.qr]
     }
     
     private enum CaptureMode: Int {
@@ -317,7 +350,7 @@ class CameraViewController: UIViewController {
     private var backgroundRecordingID: UIBackgroundTaskIdentifier = .invalid
     private weak var recordTimer: Timer?
     
-    @IBAction private func settingsButtonTap() {
+    @IBAction private func settingsButtonHandler() {
         UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
     }
     
@@ -395,17 +428,16 @@ class CameraViewController: UIViewController {
                 devices.first(where: { $0.position == preferredPosition })
             else { return }
             do {
-                let videoDeviceInput = try AVCaptureDeviceInput(device: videoDevice)
+                let newVideoInput = try AVCaptureDeviceInput(device: videoDevice)
                 
                 session.beginConfiguration()
-                
                 session.removeInput(videoDeviceInput)
                 
-                if session.canAddInput(videoDeviceInput) {
-                    session.addInput(videoDeviceInput)
-                    self.videoDeviceInput = videoDeviceInput
+                if session.canAddInput(newVideoInput) {
+                    session.addInput(newVideoInput)
+                    videoDeviceInput = newVideoInput
                 } else {
-                    session.addInput(videoDeviceInput)
+                    session.addInput(newVideoInput)
                 }
                 if let connection = movieFileOutput?.connection(
                     with: .video
@@ -421,10 +453,10 @@ class CameraViewController: UIViewController {
         }
     }
     
-    @IBAction private func tap(_ sender: UIGestureRecognizer) {
+    @IBAction private func tapHandler(_ sender: UIGestureRecognizer) {
         let location = sender.location(in: view)
         var nearestQR: (Link?, CGFloat) = (nil, CGFloat.greatestFiniteMagnitude)
-        
+
         for (link, layer) in qrDetectorLayers {
             if let distance = layer.frame.controlDistanceFromMid(to: location),
                distance < nearestQR.1
@@ -432,7 +464,11 @@ class CameraViewController: UIViewController {
                 nearestQR = (link, distance)
             }
         }
-        switch nearestQR.0 {
+        nearestQR.0.map(navigate(to:))
+    }
+        
+    private func navigate(to link: Link) {
+        switch link {
         case .group(let groupId):
             apiManager.getGroupIfHasMarket(
                 groupId: groupId
@@ -462,15 +498,19 @@ class CameraViewController: UIViewController {
                     print(error)
                 }
             }
-            
-        case .none: break
         }
     }
     
-    @IBAction private func closeButtonTap() {
+    @IBAction private func closeButtonHandler() {
         navigationController?.popViewController(animated: true)
     }
     
+//    private func replaceViewController(
+//        _ viewController: UIViewController
+//    ) {
+//
+//    }
+//
     private func navigate(to group: Group) {
         navigationController?.replaceTopController(
             with: R.storyboard.main.productsListViewController()!.apply {
@@ -521,15 +561,23 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
         
         var success = true
         
-        if error != nil {
-            success = (((error! as NSError).userInfo[AVErrorRecordingSuccessfullyFinishedKey] as AnyObject).boolValue)!
+        if let error = error as NSError? {
+            success = (error.userInfo[AVErrorRecordingSuccessfullyFinishedKey] as AnyObject).boolValue == true
             if !success {
                 print("Movie file finishing error: \(String(describing: error))")
             }
         }
         
         if success {
-            performSegue(withIdentifier: "trim", sender: outputFileURL)
+            let viewController = R.storyboard.main.prepareVideoStoryViewController()!
+            viewController.videoURL = outputFileURL
+            if case .recorder(let product) = functionality {
+                viewController.attachedProduct = product
+            }
+            navigationController?.pushViewController(
+                viewController,
+                animated: false
+            )
         } else {
             cleanup()
         }
@@ -593,18 +641,46 @@ extension CameraViewController: CaptureButtonDelegate {
     }
     
     private func endRecording() {
+        let elapsedTime = recordTimer.map {
+            Constants.pressDurationUntilRecordingStarts - $0.fireDate.timeIntervalSinceNow
+        }
         recordTimer?.invalidate()
         captureButton.buttonState = .recorded
-        sessionQueue.async { [self] in
-            if movieFileOutput.isRecording {
-                movieFileOutput.stopRecording()
+        if let elapsedTime = elapsedTime {
+            if elapsedTime < 0.1 {
+                takePhoto()
             }
-            
-            executeOnMainQueue {
-                UIView.animate(withDuration: 0.3) {
-                    configButtonsContainer.alpha = 1
+        } else {
+            sessionQueue.async { [self] in
+                if movieFileOutput.isRecording {
+                    movieFileOutput.stopRecording()
+                }
+                executeOnMainQueue {
+                    UIView.animate(withDuration: 0.3) {
+                        configButtonsContainer.alpha = 1
+                    }
                 }
             }
+        }
+    }
+    
+    private func takePhoto() {
+        let photoSettings = AVCapturePhotoSettings()
+        guard
+            let photoPreviewType = photoSettings.__availablePreviewPhotoPixelFormatTypes
+                .first
+        else { return }
+        photoSettings.previewPhotoFormat = [
+            kCVPixelBufferPixelFormatTypeKey as String: photoPreviewType
+        ]
+        photoOutput.capturePhoto(with: photoSettings, delegate: self)
+        let shutterView = UIView(frame: view.bounds)
+        shutterView.backgroundColor = .black
+        view.insertSubview(shutterView, at: 2)
+        UIView.animate(withDuration: 0.3) {
+            shutterView.alpha = 0
+        } completion: { _ in
+            shutterView.removeFromSuperview()
         }
     }
 }
@@ -665,7 +741,7 @@ extension CameraViewController: AVCaptureMetadataOutputObjectsDelegate {
         progress: Float,
         completion: (() -> Void)? = nil
     ) {
-        let opacity: CGFloat
+        let opacity: Float
         let fromScale: CGFloat
         let toScale: CGFloat
         if appearance {
@@ -679,12 +755,23 @@ extension CameraViewController: AVCaptureMetadataOutputObjectsDelegate {
         }
         layer.removeAllAnimations()
         CATransaction.begin()
-        CATransaction.setAnimationDuration(Constants.qrAnimationDuration * .init(1 - progress))
         CATransaction.setCompletionBlock(completion)
-        layer.animate(opacity, forKeyPath: "opacity")
-        layer.animate(NSValue(caTransform3D: CATransform3DMakeScale(toScale, toScale, 1)),
-                      initialValue: NSValue(caTransform3D: CATransform3DMakeScale(fromScale, fromScale, 1)),
-                      forKeyPath: "transform")
+        CATransaction.setAnimationDuration(
+            Constants.qrAnimationDuration * .init(1 - progress)
+        )
+        layer.animate(
+            .init(
+                keyPath: \.opacity,
+                toValue: opacity
+            )
+        )
+        layer.animate(
+            .init(
+                keyPath: \.transform,
+                fromValue: CATransform3DMakeScale(fromScale, fromScale, 1),
+                toValue: CATransform3DMakeScale(toScale, toScale, 1)
+            )
+        )
         CATransaction.commit()
     }
     
@@ -717,8 +804,58 @@ extension CameraViewController: AVCaptureMetadataOutputObjectsDelegate {
     }
 }
 
-extension AVCaptureDevice.DiscoverySession {
-    var uniqueDevicePositionsCount: Int {
-        Set(devices.map { $0.position }).count
+extension CameraViewController: AVCapturePhotoCaptureDelegate {
+    @available(iOS 11.0, *)
+    func photoOutput(
+        _ output: AVCapturePhotoOutput,
+        didFinishProcessingPhoto photo: AVCapturePhoto,
+        error: Error?
+    ) {
+        photo.fileDataRepresentation().map(process(photoData:))
+        error.map { print(#function, $0) }
+    }
+        
+    // swiftlint:disable:next function_parameter_count
+    func photoOutput(
+        _ output: AVCapturePhotoOutput,
+        didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?,
+        previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?,
+        resolvedSettings: AVCaptureResolvedPhotoSettings,
+        bracketSettings: AVCaptureBracketedStillImageSettings?,
+        error: Error?
+    ) {
+        guard
+            let photoSampleBuffer = photoSampleBuffer,
+            let photoData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(
+                forJPEGSampleBuffer: photoSampleBuffer,
+                previewPhotoSampleBuffer: previewPhotoSampleBuffer
+            )
+        else {
+            error.map { print(#function, $0) }
+            return
+        }
+        process(photoData: photoData)
+    }
+    
+    private func process(photoData: Data) {
+        guard let photo = UIImage(data: photoData) else { return }
+        let viewController = R.storyboard.main.prepareImageStoryViewController()!
+        viewController.photo = photo
+        if case .recorder(let product) = functionality {
+            viewController.attachedProduct = product
+        }        
+        navigationController?.pushViewController(
+            viewController,
+            animated: false
+        )
+    }
+}
+
+extension CameraViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldReceive touch: UITouch
+    ) -> Bool {
+        touch.view == gestureRecognizer.view
     }
 }

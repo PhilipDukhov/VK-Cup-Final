@@ -29,27 +29,13 @@ class MarketListApiManager {
         completion: @escaping (Result<[Group], BaseApiManager.Error>) -> Void
     ) {
         baseApiManager.sendHandleAndParse(
-            VK.API.Custom.execute(
-                code: """
-                    var groups = API.groups.search({
-                        "q":"\(query.isEmpty ? "Одежда" : query)",
-                        "market":1,
-                        "cityId":\(city.id),
-                    }).items;
-                    var filteredGroups = [];
-                    var i=0;
-                    while (i!=groups.length) {
-                        if (API.market.get({
-                                    "owner_id": "-"+groups[i].id,
-                                    "count": 0,
-                                }).count!=0)
-                        {
-                            filteredGroups.push(groups[i]);
-                        }
-                        i=i+1;
-                    }
-                    return filteredGroups;
-                """),
+            VK.API.Custom.remote(
+                method: "getMarketGroups",
+                parameters: [
+                    "q": "\(query.isEmpty ? "Одежда" : query)",
+                    "cityId": city.id
+                ].stringify
+            ),
             container: .response,
             completion: completion
         )

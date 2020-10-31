@@ -30,22 +30,14 @@ class LinkResolverApiManager {
         completion: @escaping (Result<Group, BaseApiManager.Error>) -> Void
     ) {
         baseApiManager.sendHandleAndParseFirst(
-            VK.API.Custom.execute(
-                code: """
-                    var group = API.groups.getById({
-                        "group_id": "\(groupId)",
-                        "fields": "market"
-                    })[0];
-                    if (group.market.enabled==0||
-                        API.market.get({
-                            "owner_id": -group.id,
-                            "count": 0,
-                        }).count==0
-                    ) {
-                        return null;
-                    }
-                    return [group];
-                """),
+            // С помощью VKScript загружаем группу только
+            // в том случае, если у нее не пустой магазин
+            VK.API.Custom.remote(
+                method: "getGroupIfHasMarket",
+                parameters: [
+                    "groupId": groupId
+                ].stringify
+            ),
             container: .response,
             completion: completion
         )

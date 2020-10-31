@@ -122,22 +122,46 @@ class CaptureButton: UIControl {
         let side = min(bounds.width, bounds.height) * buttonState.multiplier
         [ovalLayer,
          progressLayer,
-        ].forEach {
-            $0.animateIfNonNull(lineWidth: side * Constants.ringWidthPart)
-            $0.animateIfNonNull(path: UIBezierPath(arcCenter: bounds.center,
-                                                   radius: side / 2 - $0.lineWidth / 2,
-                                                   startAngle: -.pi / 2,
-                                                   endAngle: .pi * 3 / 2,
-                                                   clockwise: true).cgPath)
+        ].forEach { (layer: CAShapeLayer) in
+            let lineWidth = side * Constants.ringWidthPart
+            layer.animate(
+                .init(
+                    keyPath: \.lineWidth,
+                    toValue: lineWidth,
+                    beginFromCurrentState: true,
+                    skipAnimationIfCurrentValueNil: true
+                )
+            )
+            layer.animate(
+                .init(
+                    keyPath: \.path,
+                    toValue: UIBezierPath(
+                        arcCenter: bounds.center,
+                        radius: side / 2 - lineWidth / 2,
+                        startAngle: -.pi / 2,
+                        endAngle: .pi * 3 / 2,
+                        clockwise: true
+                    ).cgPath,
+                    beginFromCurrentState: true,
+                    skipAnimationIfCurrentValueNil: true
+                )
+            )
         }
         
         let ringSide = side * (1 - (Constants.ringWidthPart + Constants.ringOffsetPart) * 2)
         
-        ringLayer.animateIfNonNull(path: UIBezierPath(arcCenter: bounds.center,
-                                                      radius: ringSide / 2,
-                                                      startAngle: 0,
-                                                      endAngle: .pi * 2,
-                                                      clockwise: true).cgPath)
+        ringLayer.animate(
+            .init(
+                keyPath: \.path,
+                toValue: UIBezierPath(arcCenter: bounds.center,
+                                      radius: ringSide / 2,
+                                      startAngle: 0,
+                                      endAngle: .pi * 2,
+                                      clockwise: true).cgPath,
+                beginFromCurrentState: true,
+                skipAnimationIfCurrentValueNil: true
+            )
+        )
     }
     
     private var initialPoint: CGPoint!

@@ -1,29 +1,47 @@
 PODS:
+  - Alamofire (5.2.2)
   - DeepDiff (2.3.1)
+  - Player (0.13.3)
   - R.swift (5.2.2):
     - R.swift.Library (~> 5.2.0)
   - R.swift.Library (5.2.0)
   - SwiftyVK (3.4.2)
 
 DEPENDENCIES:
+  - Alamofire
   - DeepDiff
+  - Player (from `https://github.com/piemonte/Player`, commit `1758a0054b963618ab71cacf82628e441e5ca1b4`)
   - R.swift
   - R.swift.Library
-  - SwiftyVK
+  - SwiftyVK (from `../SwiftyVK`)
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - DeepDiff
     - R.swift
     - R.swift.Library
-    - SwiftyVK
+
+EXTERNAL SOURCES:
+  Player:
+    :commit: 1758a0054b963618ab71cacf82628e441e5ca1b4
+    :git: https://github.com/piemonte/Player
+  SwiftyVK:
+    :path: "../SwiftyVK"
+
+CHECKOUT OPTIONS:
+  Player:
+    :commit: 1758a0054b963618ab71cacf82628e441e5ca1b4
+    :git: https://github.com/piemonte/Player
 
 SPEC CHECKSUMS:
+  Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
   DeepDiff: e5ae6c50d0321568e4508cec5930b9f10bb293fc
+  Player: e1889a481f14b3bc4065b62bed304c3de3b47dfe
   R.swift: 7c52cdc57a66840ffe6cbd8a823d732059d42a32
   R.swift.Library: 5ba4f1631300caf9a4d890186930da85d540769d
   SwiftyVK: 5005dac6e85f7b0fd44e21ed2f021a397dff4cab
 
-PODFILE CHECKSUM: 69a474bdd3db5ae70815f1529778bf246d9761ad
+PODFILE CHECKSUM: ac5dfa5e3c2aa4a1b72f7ca45e1ea7d40fe14cd5
 
 COCOAPODS: 1.9.3

@@ -31,9 +31,10 @@ class ProductsListViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destination = segueHelper.selectProduct(segue: segue)?.destination
-        {
-            destination.initialInfo = sender as? ProductPageLeaf.Model.InitialInfo
+        segueHelper.selectProduct(
+            segue: segue
+        )?.destination.apply {
+            $0.initialInfo = sender as? ProductPageLeaf.Model.InitialInfo
         }
     }
     

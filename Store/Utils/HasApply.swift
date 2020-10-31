@@ -10,6 +10,7 @@ import Foundation
 protocol HasApply { }
 
 extension HasApply {
+    @discardableResult
     func apply(closure: (Self) -> Void) -> Self {
         closure(self)
         return self
