@@ -37,7 +37,9 @@ class CollectionViewWrapper: NSObject {
         }
     }
     
-    var didSelect: (CollectionDescriptiveModel, IndexPath) -> Void = { _, _ in }
+    var didSelect: ((CollectionDescriptiveModel, IndexPath) -> Void)?
+    var pageChanged: ((Int) -> Void)?
+
     private var _sections: [Section] = []
     var sections: [Section] {
         get { _sections }
@@ -194,7 +196,16 @@ extension CollectionViewWrapper: UICollectionViewDataSource, UICollectionViewDel
         _ collectionView: UICollectionView,
         didSelectItemAt indexPath: IndexPath
     ) {
-        didSelect(item(for: indexPath), indexPath)
+        didSelect?(item(for: indexPath), indexPath)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView.isPagingEnabled else { return }
+        pageChanged?(
+            Int(
+                scrollView.contentOffset.x / scrollView.bounds.width + 0.5
+            )
+        )
     }
 }
 

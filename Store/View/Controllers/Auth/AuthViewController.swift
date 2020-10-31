@@ -9,6 +9,14 @@ import UIKit
 import SwiftyVK
 
 class AuthViewController: UIViewController {
+    enum FirstPage {
+        case camera
+        case product
+        case main
+    }
+    
+    let firstPage = FirstPage.main
+    
     private let authManager = VkAuthManager()
     
     override func viewDidLoad() {
@@ -21,15 +29,23 @@ class AuthViewController: UIViewController {
     func authorize() {
         authManager.authorize { [weak self] result in
             executeOnMainQueue {
+                guard let self = self else { return }
                 switch result {
                 case .success:
-                    self?.openRecorder()
-//                    self?.navigationController?.replaceTopController(
-//                        with: R.storyboard.main.marketListViewController()!
-//                    )
+                    switch self.firstPage {
+                    case .camera:
+                        self.openRecorder()
+                    case .main:
+                        self.navigationController?.replaceTopController(
+                            with: R.storyboard.main.marketListViewController()!
+                        )
+                        
+                    case .product:
+                        self.openProduct()
+                    }
                     
                 case .failure:
-                    self?.authorize()
+                    self.authorize()
                 }
             }
         }
@@ -53,6 +69,18 @@ class AuthViewController: UIViewController {
                 self?.navigationController?.replaceTopController(
                     with: R.storyboard.main.cameraViewController()!.apply {
                         $0.functionality = .recorder(product)
+                    }
+                )
+            }
+        }
+    }
+    
+    private func openProduct() {
+        getProduct { [weak self] product in
+            executeOnMainQueue {
+                self?.navigationController?.replaceTopController(
+                    with: R.storyboard.main.productPageViewController()!.apply {
+                        $0.initialInfo = .init(product: product)
                     }
                 )
             }

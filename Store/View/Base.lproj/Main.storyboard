@@ -392,6 +392,9 @@
                                                     </collectionViewCell>
                                                 </cells>
                                             </collectionView>
+                                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="Fmb-Di-OiL">
+                                                <rect key="frame" x="145.5" y="386" width="123" height="28"/>
+                                            </pageControl>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" verticalCompressionResistancePriority="752" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="1vY-xD-faF">
                                                 <rect key="frame" x="12" y="426" width="390" height="24"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
@@ -434,6 +437,8 @@
                                             <constraint firstItem="3fg-ba-RLI" firstAttribute="leading" secondItem="VOr-G5-SRC" secondAttribute="leading" id="eLP-Po-hU6"/>
                                             <constraint firstItem="P55-a7-45h" firstAttribute="top" secondItem="dfm-Px-Iay" secondAttribute="bottom" constant="10" id="eXp-Go-IWn"/>
                                             <constraint firstItem="3fg-ba-RLI" firstAttribute="top" secondItem="VOr-G5-SRC" secondAttribute="top" id="hES-FH-s1D"/>
+                                            <constraint firstItem="Fmb-Di-OiL" firstAttribute="bottom" secondItem="3fg-ba-RLI" secondAttribute="bottom" id="sMg-0Y-ohy"/>
+                                            <constraint firstItem="Fmb-Di-OiL" firstAttribute="centerX" secondItem="3fg-ba-RLI" secondAttribute="centerX" id="usX-fs-sco"/>
                                             <constraint firstAttribute="bottom" secondItem="P55-a7-45h" secondAttribute="bottom" id="wIQ-fP-9JH"/>
                                         </constraints>
                                     </view>
@@ -496,6 +501,7 @@
                         <outlet property="collectionView" destination="3fg-ba-RLI" id="Vtz-su-CZP"/>
                         <outlet property="descriptionLabel" destination="P55-a7-45h" id="JUA-KM-nSI"/>
                         <outlet property="favoriteButton" destination="pcF-pJ-nl3" id="iS8-3D-CGL"/>
+                        <outlet property="pageControl" destination="Fmb-Di-OiL" id="8ah-q2-rJP"/>
                         <outlet property="priceLabel" destination="dfm-Px-Iay" id="MTf-wF-C2c"/>
                         <outlet property="titleLabel" destination="1vY-xD-faF" id="vmj-6y-058"/>
                     </connections>
@@ -958,7 +964,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="DDf-Zh-Xt4"/>
+        <segue reference="nxR-Qu-lXl"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="cancel_shadow_48" width="48" height="48"/>

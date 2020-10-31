@@ -15,6 +15,7 @@ class ProductPageViewController: UIViewController {
     @IBOutlet private var priceLabel: UILabel!
     @IBOutlet private var descriptionLabel: UILabel!
     @IBOutlet private var favoriteButton: SelectableButton!
+    @IBOutlet private var pageControl: UIPageControl!
         
     private var runtime: Any?
     private var collectionViewWrapper: CollectionViewWrapper!
@@ -22,10 +23,16 @@ class ProductPageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         titleLabel.text = initialInfo.product.title
         title = initialInfo.product.title
         priceLabel.text = initialInfo.product.price.text
         descriptionLabel.text = initialInfo.product.description
+        pageControl.numberOfPages = initialInfo.product.photos.count
+        if pageControl.numberOfPages == 1 {
+            pageControl.numberOfPages = 0
+        }
+            
         collectionViewWrapper = CollectionViewWrapper(
             collectionView: collectionView,
             sections: [.productPageSection(
@@ -36,6 +43,9 @@ class ProductPageViewController: UIViewController {
                 }
             )]
         )
+        collectionViewWrapper.pageChanged = { [weak self] in
+            self?.pageControl.currentPage = $0
+        }
         runtime = ProductPageLeaf.runtime(
             initialInfo: initialInfo
         ) { [weak self] in
