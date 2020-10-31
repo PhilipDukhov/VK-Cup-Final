@@ -119,7 +119,7 @@ class TrimSliderControl: UIControl {
         }
     }
     
-    var trackingControl = TrackingControl.none
+    private(set) var trackingControl = TrackingControl.none
     
     // MARK: - Privates
     
@@ -203,8 +203,17 @@ class TrimSliderControl: UIControl {
     private func nearestControl(toTouch touch: UITouch) -> TrackingControl {
         var nearestControl = (TrackingControl.none, CGFloat.greatestFiniteMagnitude)
         for control in TrackingControl.allControls {
-            if let (controlView, frame) = viewWithFrame(for: control),
-               let distance = frame.controlDistanceFromMid(to: touch.location(in: controlView.superview)),
+            if control == .midThumb,
+               minValue == minSelectedValue,
+               maxValue == maxSelectedValue
+            {
+                continue
+            }
+            if let controlView = view(for: control),
+               let distance = controlView.frame
+                .controlDistanceFromMid(
+                    to: touch.location(in: controlView.superview)
+                ),
                distance <= nearestControl.1
             {
                 nearestControl = (control, distance)
@@ -223,17 +232,14 @@ class TrimSliderControl: UIControl {
         return result.isFinite ? result : 0
     }
     
-    private func viewWithFrame(for trackingControl: TrackingControl) -> (UIView, CGRect)? {
+    private func view(for trackingControl: TrackingControl) -> UIView? {
         let view: UIView
-        var frame: CGRect!
         switch trackingControl {
         case .none:
             return nil
             
         case .playbackThumb:
             view = playbackView
-            frame = view.frame
-            frame.size.height = frame.width
             
         case .minThumb:
             view = minThumbView
@@ -244,7 +250,7 @@ class TrimSliderControl: UIControl {
         case .midThumb:
             view = selectedBorderView
         }
-        return (view, frame ?? view.frame)
+        return view
     }
     
     private func update(view: UIView?, withPositionX position: CGFloat) {

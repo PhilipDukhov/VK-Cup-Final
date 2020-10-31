@@ -655,7 +655,7 @@
                         <outlet property="previewView" destination="NMW-Xq-KRQ" id="bdS-Ft-X4h"/>
                         <outlet property="toggleCameraButton" destination="UQw-wp-wHA" id="ihl-N0-Cz4"/>
                         <segue destination="neV-GT-ejC" kind="show" identifier="video" id="Zzd-OE-aw5"/>
-                        <segue destination="m2V-Di-boE" kind="show" id="1lU-4s-2Vm"/>
+                        <segue destination="m2V-Di-boE" kind="show" identifier="image" id="1lU-4s-2Vm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ghE-pV-NHD" sceneMemberID="firstResponder"/>
