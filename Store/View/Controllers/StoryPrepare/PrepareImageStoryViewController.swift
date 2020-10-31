@@ -94,11 +94,8 @@ class PrepareImageStoryViewController: BasePrepareStoryViewController {
                 executeOnMainQueue { [weak self] in
                     self?.state = .exporting(0.1 + 0.9 * progress)
                 }
-            } completion: { result in
-                executeOnMainQueue { [weak self] in
-                    self?.state = .idle
-//                    self?.dismissAfterFinished()
-                }
+            } completion: { [weak self] in
+                self?.handleUploadResult($0.mapError { $0 })
             }
     }
 }

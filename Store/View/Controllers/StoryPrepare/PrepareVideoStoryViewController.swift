@@ -83,15 +83,7 @@ class PrepareVideoStoryViewController: BasePrepareStoryViewController {
     override func shareButtonTap() {
         player.pause()
         state = .exporting(0)
-        export { [weak self] success in
-            guard let self = self else { return }
-            if success {
-                self.dismissAfterFinished()
-            } else {
-                self.player.playFromCurrentTime()
-                self.state = .idle
-            }
-        }
+        export()
     }
     
     @IBAction func trimSliderTouchDown(_ sender: TrimSliderControl) {
@@ -188,7 +180,7 @@ class PrepareVideoStoryViewController: BasePrepareStoryViewController {
         }
     }
     
-    private func export(completion: @escaping (Bool) -> Void) {
+    private func export() {
         guard
             let (composition, videoComposition) = try? generateComposition(),
             let exporter = AVAssetExportSession(
@@ -215,44 +207,32 @@ class PrepareVideoStoryViewController: BasePrepareStoryViewController {
                     updateProgressTimer.fire()
                     updateProgressTimer.invalidate()
                 }
-                let resultController: UIViewController
+                guard let self = self else { return }
                 if let error = exporter.error {
-                    print(error)
-                    resultController = UIAlertController(
-                        title: "Export error",
-                        message: error.localizedDescription,
-                        preferredStyle: .alert
-                    )
-                    DispatchQueue.main.asyncAfter(
-                        deadline: .now() + 2
-                    ) {
-                        resultController.dismiss(animated: true)
-                    }
-                    completion(false)
-                    self?.present(resultController, animated: true)
+                    self.handleUploadResult(.failure(error))
                     return
                 }
-                let activityViewController = UIActivityViewController(activityItems: [exporter.outputURL!], applicationActivities: nil)
-                activityViewController.completionWithItemsHandler = { _, completed, _, _ in
-                    completion(completed)
-                }
-//                self?.present(activityViewController, animated: true)
-                self?.apiManager
+                self.apiManager
                     .uploadVideo(
                         videoURL: exporter.outputURL!,
-                        product: self!.attachedProduct
+                        product: self.attachedProduct
                     ) { progress in
                         executeOnMainQueue { [weak self] in
                             self?.state = .exporting(0.5 + 0.5 * progress)
                         }
-                    } completion: { result in
-                        executeOnMainQueue { [weak self] in
-                            self?.state = .idle
-                            print(result)
-//                            // self?.dismissAfterFinished()
-                        }
+                    } completion: { [weak self] in
+                        self?.handleUploadResult($0.mapError { $0 })
                     }
             }
+        }
+    }
+    
+    override func handleUploadResult(
+        _ result: Result<Void, Error>
+    ) {
+        super.handleUploadResult(result)
+        if case .failure = result {
+            player.playFromCurrentTime()
         }
     }
     

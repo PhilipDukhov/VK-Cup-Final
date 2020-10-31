@@ -59,7 +59,10 @@ class ProductsListViewController: UIViewController {
             dispatch(.selectProduct(props.products[indexPath.item]))
         }
         props.navigationMsg.mapOnMain(handleNavigationMsg)
-        props.error.map { print($0) }
+        props.error.map {
+            presentError($0)
+            dispatch(.setError(nil))
+        }
     }
     
     private func handleNavigationMsg(

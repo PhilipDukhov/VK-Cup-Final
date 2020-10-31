@@ -68,7 +68,6 @@ class CollectionViewWrapper: NSObject {
                         result += $0
                     }
             }
-        print(difference)
         guard !difference.isEmpty else { return }
         executeOnMainQueue { [self] in
             collectionView.performBatchUpdates {

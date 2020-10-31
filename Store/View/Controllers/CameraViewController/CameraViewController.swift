@@ -139,17 +139,10 @@ class CameraViewController: UIViewController {
                 }
                 
             case .configurationFailed:
-                executeOnMainQueue {
-                    let alertMsg = "Alert message when something goes wrong during capture session configuration"
-                    let message = NSLocalizedString("Unable to capture media", comment: alertMsg)
-                    let alertController = UIAlertController(title: "AVCam", message: message, preferredStyle: .alert)
-                    
-                    alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"),
-                                                            style: .cancel,
-                                                            handler: nil))
-                    
-                    present(alertController, animated: true, completion: nil)
-                }
+                presentError(
+                    NSError(description: "Alert message when something goes wrong during capture session configuration"),
+                    title: "Unable to capture media"
+                )
             }
         }
     }
@@ -206,7 +199,10 @@ class CameraViewController: UIViewController {
         do {
             try addVideoInput()
         } catch {
-            print("Couldn't create video device input: \(error)")
+            presentError(
+                error,
+                title: "Couldn't create video device input"
+            )
             setupResult = .configurationFailed
             return
         }
@@ -359,16 +355,14 @@ class CameraViewController: UIViewController {
             guard device.hasTorch else { return }
             do {
                 try device.lockForConfiguration()
+                defer {
+                    device.unlockForConfiguration()
+                }
                 guard device.torchMode != .on else {
                     device.torchMode = .off
                     return
                 }
-                do {
-                    try device.setTorchModeOn(level: 1.0)
-                } catch {
-                    print("[toggleFlash]: \(error)")
-                }
-                device.unlockForConfiguration()
+                try? device.setTorchModeOn(level: 1.0)
             } catch {
                 print("[toggleFlash]: \(error)")
             }
@@ -475,6 +469,11 @@ class CameraViewController: UIViewController {
                     
                 case .failure(let error):
                     print(error)
+                    self?.presentError(
+                        NSError(
+                            description: "Group not found or doesn't have markets"
+                        )
+                    )
                 }
             }
             
@@ -490,6 +489,11 @@ class CameraViewController: UIViewController {
                     
                 case .failure(let error):
                     print(error)
+                    self?.presentError(
+                        NSError(
+                            description: "Product not found"
+                        )
+                    )
                 }
             }
         }
@@ -539,18 +543,12 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
         endRecording()
         func cleanup() {
             let path = outputFileURL.path
-            if FileManager.default.fileExists(atPath: path) {
-                do {
-                    try FileManager.default.removeItem(atPath: path)
-                } catch {
-                    print("Could not remove file at url: \(outputFileURL)")
-                }
-            }
-            
+            try? FileManager.default.removeItem(atPath: path)
             if backgroundRecordingID != .invalid {
                 UIApplication.shared.endBackgroundTask(backgroundRecordingID)
                 backgroundRecordingID = .invalid
             }
+            view.isUserInteractionEnabled = true
         }
         
         var success = true
@@ -558,7 +556,10 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
         if let error = error as NSError? {
             success = (error.userInfo[AVErrorRecordingSuccessfullyFinishedKey] as AnyObject).boolValue == true
             if !success {
-                print("Movie file finishing error: \(String(describing: error))")
+                presentError(
+                    error,
+                    title: "Video recording failed"
+                    )
             }
         }
         
@@ -805,8 +806,14 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
         didFinishProcessingPhoto photo: AVCapturePhoto,
         error: Error?
     ) {
-        photo.fileDataRepresentation().map(process(photoData:))
-        error.map { print(#function, $0) }
+        if let data = photo.fileDataRepresentation() {
+            process(photoData: data)
+        } else {
+            presentError(
+                error,
+                title: "Take photo failed"
+            )
+        }
     }
         
     // swiftlint:disable:next function_parameter_count
@@ -825,7 +832,10 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
                 previewPhotoSampleBuffer: previewPhotoSampleBuffer
             )
         else {
-            error.map { print(#function, $0) }
+            presentError(
+                error,
+                title: "Take photo failed"
+            )
             return
         }
         process(photoData: photoData)

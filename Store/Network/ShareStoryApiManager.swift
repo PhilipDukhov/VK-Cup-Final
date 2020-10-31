@@ -49,10 +49,7 @@ class ShareStoryApiManager {
                 progressHandler: {
                     progressHandler(0.1 + 0.85 * $0)
                 },
-                completion: {
-                    progressHandler(1)
-                    completion($0)
-                }
+                completion: completion
             )
         }
         .onError {
@@ -86,10 +83,7 @@ class ShareStoryApiManager {
                 progressHandler: {
                     progressHandler(0.1 + 0.85 * $0)
                 },
-                completion: {
-                    progressHandler(1)
-                    completion($0)
-                }
+                completion: completion
             )
         }
         .onError {

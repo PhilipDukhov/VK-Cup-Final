@@ -98,7 +98,6 @@ extension Model {
                 favorite: favorite
             ) { result in
                 if case .failure(let error) = result {
-                    print(error)
                     dispatch(.revertFavorite)
                 }
             }

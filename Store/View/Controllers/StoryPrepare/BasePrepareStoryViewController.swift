@@ -183,6 +183,22 @@ class BasePrepareStoryViewController: UIViewController {
         }
     }
     
+    func handleUploadResult(
+        _ result: Result<Void, Error>
+    ) {
+        switch result {
+        case .success:
+            executeOnMainQueue { [self] in
+                state = .exporting(1)
+                dismissAfterFinished()
+            }
+            
+        case .failure(let error):
+            state = .idle
+            presentError(error)
+        }
+    }
+    
     func renderProductView() -> UIImage {
         UIGraphicsImageRenderer(
             size: productView.bounds.size
