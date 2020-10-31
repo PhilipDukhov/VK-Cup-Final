@@ -145,6 +145,7 @@ class CameraViewController: UIViewController {
                 )
             }
         }
+        view.isUserInteractionEnabled = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -636,25 +637,32 @@ extension CameraViewController: CaptureButtonDelegate {
     }
     
     private func endRecording() {
+        view.isUserInteractionEnabled = false
         let elapsedTime = recordTimer.map {
             Constants.pressDurationUntilRecordingStarts - $0.fireDate.timeIntervalSinceNow
         }
         recordTimer?.invalidate()
         captureButton.buttonState = .recorded
         if let elapsedTime = elapsedTime {
-            if elapsedTime < 0.1 {
+            if elapsedTime < 0.15 {
                 takePhoto()
+            } else {
+                view.isUserInteractionEnabled = true
             }
         } else {
-            sessionQueue.async { [self] in
-                if movieFileOutput.isRecording {
+            let animateConfigButtonsContainer = {
+                UIView.animate(withDuration: 0.3) { [self] in
+                    configButtonsContainer.alpha = 1
+                }
+            }
+            if movieFileOutput.isRecording {
+                sessionQueue.async { [self] in
                     movieFileOutput.stopRecording()
+                    executeOnMainQueue(block: animateConfigButtonsContainer)
                 }
-                executeOnMainQueue {
-                    UIView.animate(withDuration: 0.3) {
-                        configButtonsContainer.alpha = 1
-                    }
-                }
+            } else {
+                view.isUserInteractionEnabled = true
+                animateConfigButtonsContainer()
             }
         }
     }

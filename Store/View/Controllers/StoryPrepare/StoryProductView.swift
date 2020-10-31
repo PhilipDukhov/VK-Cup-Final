@@ -38,16 +38,29 @@ class StoryProductView: UIView {
         titleLabel.text = product.title
         updatePriceLabel()
         imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         imageView.frame.size = .init(side: UIScreen.main.bounds.width / 2)
-        imageView.setImage(photoSizes: product.photos.first!.sizes)
+        let photo = product.photos.first
+        photo.map { imageView.setImage(photoSizes: $0.sizes) }
         layer.borderColor = UIColor.vkBlue.cgColor
         clipsToBounds = true
         backgroundColor = .white
         
         translatesAutoresizingMaskIntoConstraints = false
         let container = UIView()
-        addSubview(container)
-        container.translatesAutoresizingMaskIntoConstraints = false
+        let leftMargin = UIView()
+        let topMargin = UIView()
+        let rightMargin = UIView()
+        let bottomMargin = UIView()
+        [container,
+         leftMargin,
+         topMargin,
+         rightMargin,
+         bottomMargin,
+        ].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            addSubview($0)
+        }
         [imageView,
          titleLabel,
          priceLabel,
@@ -55,54 +68,148 @@ class StoryProductView: UIView {
             $0.translatesAutoresizingMaskIntoConstraints = false
             container.addSubview($0)
         }
-        NSLayoutConstraint.activate([
+        var constraints = [
             widthConstraints,
-            container.widthAnchor.constraint(
-                equalTo: widthAnchor,
-                multiplier: 0.9
-            ),
-            container.heightAnchor.constraint(
-                equalTo: heightAnchor,
-                multiplier: 0.9
-            ),
-            container.centerXAnchor.constraint(
-                equalTo: centerXAnchor
-            ),
-            container.centerYAnchor.constraint(
-                equalTo: centerYAnchor
-            ),
-            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor),
-            imageView.leftAnchor.constraint(
-                equalTo: container.leftAnchor
-            ),
-            imageView.rightAnchor.constraint(
-                equalTo: container.rightAnchor
-            ),
-            imageView.topAnchor.constraint(
-                equalTo: container.topAnchor
-            ),
-            imageView.bottomAnchor.constraint(
-                equalTo: titleLabel.topAnchor
-            ),
-            titleLabel.widthAnchor.constraint(
-                equalTo: container.widthAnchor
-            ),
-            titleLabel.centerXAnchor.constraint(
-                equalTo: container.centerXAnchor
-            ),
-            titleLabel.bottomAnchor.constraint(
-                equalTo: priceLabel.topAnchor
-            ),
-            priceLabel.widthAnchor.constraint(
-                equalTo: container.widthAnchor
-            ),
-            priceLabel.bottomAnchor.constraint(
-                equalTo: container.bottomAnchor
-            ),
-            priceLabel.centerXAnchor.constraint(
-                equalTo: container.centerXAnchor
-            ),
-        ])
+        ]
+        titleLabel.apply {
+            constraints += [
+                $0.widthAnchor.constraint(
+                    equalTo: container.widthAnchor
+                ),
+                $0.centerXAnchor.constraint(
+                    equalTo: container.centerXAnchor
+                ),
+                $0.bottomAnchor.constraint(
+                    equalTo: priceLabel.topAnchor
+                ),
+            ]
+        }
+        priceLabel.apply {
+            constraints += [
+                $0.widthAnchor.constraint(
+                    equalTo: container.widthAnchor
+                ),
+                $0.centerXAnchor.constraint(
+                    equalTo: container.centerXAnchor
+                ),
+                $0.bottomAnchor.constraint(
+                    equalTo: container.bottomAnchor
+                ),
+            ]
+        }
+        leftMargin.apply {
+            constraints += [
+                $0.leftAnchor.constraint(
+                    equalTo: leftAnchor
+                ),
+                $0.topAnchor.constraint(
+                    equalTo: topAnchor
+                ),
+                $0.bottomAnchor.constraint(
+                    equalTo: bottomAnchor
+                ),
+                $0.rightAnchor.constraint(
+                    equalTo: container.leftAnchor
+                ),
+                $0.widthAnchor.constraint(
+                    equalTo: widthAnchor,
+                    multiplier: (1 - .contentWidthPart) / 2
+                ),
+            ]
+        }
+        topMargin.apply {
+            constraints += [
+                $0.leftAnchor.constraint(
+                    equalTo: leftAnchor
+                ),
+                $0.topAnchor.constraint(
+                    equalTo: topAnchor
+                ),
+                $0.bottomAnchor.constraint(
+                    equalTo: container.topAnchor
+                ),
+                $0.rightAnchor.constraint(
+                    equalTo: rightAnchor
+                ),
+                $0.heightAnchor.constraint(
+                    equalTo: leftMargin.widthAnchor
+                ),
+            ]
+        }
+        rightMargin.apply {
+            constraints += [
+                $0.leftAnchor.constraint(
+                    equalTo: container.rightAnchor
+                ),
+                $0.topAnchor.constraint(
+                    equalTo: topAnchor
+                ),
+                $0.bottomAnchor.constraint(
+                    equalTo: bottomAnchor
+                ),
+                $0.rightAnchor.constraint(
+                    equalTo: rightAnchor
+                ),
+                $0.widthAnchor.constraint(
+                    equalTo: leftMargin.widthAnchor
+                ),
+            ]
+        }
+        bottomMargin.apply {
+            constraints += [
+                $0.leftAnchor.constraint(
+                    equalTo: leftAnchor
+                ),
+                $0.topAnchor.constraint(
+                    equalTo: container.bottomAnchor
+                ),
+                $0.bottomAnchor.constraint(
+                    equalTo: bottomAnchor
+                ),
+                $0.rightAnchor.constraint(
+                    equalTo: rightAnchor
+                ),
+                $0.heightAnchor.constraint(
+                    equalTo: leftMargin.widthAnchor
+                ),
+            ]
+        }
+        
+        if let photo = photo {
+            let sizes = photo.sizes.sizes.last
+            var photoRatio: CGFloat?
+            if
+                let width = photo.width ?? sizes?.width,
+                let height = photo.height ?? sizes?.height
+            {
+                photoRatio = CGFloat(width) / CGFloat(height)
+            }
+            constraints += [
+                imageView.widthAnchor.constraint(
+                    equalTo: imageView.heightAnchor,
+                    multiplier: photoRatio ?? 1
+                ),
+                imageView.leftAnchor.constraint(
+                    equalTo: container.leftAnchor
+                ),
+                imageView.rightAnchor.constraint(
+                    equalTo: container.rightAnchor
+                ),
+                imageView.topAnchor.constraint(
+                    equalTo: container.topAnchor
+                ),
+                imageView.bottomAnchor.constraint(
+                    equalTo: titleLabel.topAnchor
+                ),
+            ]
+        } else {
+            constraints += [
+                titleLabel.topAnchor.constraint(
+                    equalTo: container.topAnchor
+                ),
+            ]
+        }
+        NSLayoutConstraint.activate(constraints)
         widthUpdated()
         isUserInteractionEnabled = false
     }
@@ -112,15 +219,19 @@ class StoryProductView: UIView {
     }
     
     private func widthUpdated() {
-        let size = width / 12
-        titleLabel.font = .systemFont(ofSize: size)
-        priceLabel.font = .systemFont(ofSize: size, weight: .medium)
+        let textSize = width / 12
+        titleLabel.font = .systemFont(ofSize: textSize)
+        priceLabel.font = .systemFont(ofSize: textSize, weight: .medium)
         layer.borderWidth = width / 50
         layer.cornerRadius = width / 10
-        imageView.layer.cornerRadius = width / 10
+        imageView.layer.cornerRadius = layer.cornerRadius * .contentWidthPart
     }
     
     private func updatePriceLabel() {
         priceLabel.text = priceLabelShowed ? product.price.text : ""
     }
+}
+
+extension CGFloat {
+    static let contentWidthPart: CGFloat = 0.9
 }

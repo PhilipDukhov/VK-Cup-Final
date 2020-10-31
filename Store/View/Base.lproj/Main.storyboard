@@ -918,7 +918,7 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jIs-KT-28V">
                                 <rect key="frame" x="358" y="52" width="48" height="48"/>
-                                <state key="normal" title="Button" image="download_shadow_48"/>
+                                <state key="normal" image="shareStory"/>
                                 <connections>
                                     <action selector="shareButtonTap" destination="m2V-Di-boE" eventType="touchUpInside" id="vAk-n3-JKV"/>
                                 </connections>
@@ -964,7 +964,6 @@
         <image name="cancel_shadow_48" width="48" height="48"/>
         <image name="check_circle_on_24" width="24" height="24"/>
         <image name="dismiss_24" width="24" height="24"/>
-        <image name="download_shadow_48" width="48" height="48"/>
         <image name="flash_off_outline_shadow_48" width="48" height="48"/>
         <image name="flash_shadow_48" width="48" height="48"/>
         <image name="productStory" width="29" height="29"/>
