@@ -30,14 +30,6 @@ class ProductsListViewController: UIViewController {
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        segueHelper.selectProduct(
-            segue: segue
-        )?.destination.apply {
-            $0.initialInfo = sender as? ProductPageLeaf.Model.InitialInfo
-        }
-    }
-    
     private func render(
         props: ProductsListLeaf.Props,
         dispatch: @escaping Dispatch<ProductsListLeaf.Msg>
@@ -73,9 +65,13 @@ class ProductsListViewController: UIViewController {
     ) {
         switch navigationMsg {
         case .selectProduct(let initialInfo):
-            performSegue(
-                withIdentifier: segueHelper.selectProduct,
-                sender: initialInfo
+            navigationController?.pushViewController(
+                R.storyboard.main
+                    .productPageViewController()!
+                    .apply {
+                        $0.initialInfo = initialInfo
+                    },
+                animated: true
             )
         }
     }

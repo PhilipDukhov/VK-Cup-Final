@@ -153,7 +153,7 @@
         <!--Choose City View Controller-->
         <scene sceneID="h6O-pQ-k4z">
             <objects>
-                <viewController id="gaV-nT-95V" customClass="ChooseCityViewController" customModule="Store" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ChooseCityViewController" id="gaV-nT-95V" customClass="ChooseCityViewController" customModule="Store" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="p3N-eH-sPo">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

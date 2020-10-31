@@ -12,10 +12,8 @@ class MarketListViewController: UIViewController {
     @IBOutlet private var collectionView: UICollectionView!
     
     private var runtime: Any?
-    private var dispatch: Dispatch<MarketListLeaf.Msg>?
     private var collectionViewWrapper: CollectionViewWrapper!
     private let titleView = MarketListTitleView()
-    private let segueHelper = R.segue.marketListViewController.self
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,20 +29,7 @@ class MarketListViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        _ = segueHelper.selectCity(
-            segue: segue
-        )?.destination.apply {
-            $0.initialInfo = sender as? ChooseCityLeaf.Model.InitialInfo
-            $0.selectCity = .init { [weak self] city in
-                self?.dispatch?(.updateCityFromPicker(city))
-            }
-        }
-        ?? segueHelper.groupProducts(
-            segue: segue
-        )?.destination.apply {
-            $0.initialInfo = sender as? ProductsListLeaf.Model.InitialInfo
-        }
-        ?? segueHelper.camera(
+        R.segue.marketListViewController.camera(
             segue: segue
         )?.destination.apply {
             $0.functionality = .qrReader
@@ -55,7 +40,6 @@ class MarketListViewController: UIViewController {
         props: MarketListLeaf.Props,
         dispatch: @escaping Dispatch<MarketListLeaf.Msg>
     ) {
-        self.dispatch = dispatch
         titleView.props = props.city.map { city in
             .init(
                 title: city.marketsListDescription,
@@ -81,7 +65,7 @@ class MarketListViewController: UIViewController {
             dispatch(.selectGroup(props.groups[indexPath.item]))
         }
         props.navigationMsg.mapOnMain { [self] in
-            handleNavigationMsg($0)
+            handleNavigationMsg($0, dispatch: dispatch)
             dispatch(.clearNavigationMsg)
         }
         props.error.map {
@@ -91,18 +75,30 @@ class MarketListViewController: UIViewController {
     }
     
     private func handleNavigationMsg(
-        _ navigationMsg: MarketListLeaf.NavigationMsg
+        _ navigationMsg: MarketListLeaf.NavigationMsg,
+        dispatch: @escaping Dispatch<MarketListLeaf.Msg>
     ) {
         switch navigationMsg {
         case .chooseCity(let initialInfo):
-            performSegue(
-                withIdentifier: segueHelper.selectCity,
-                sender: initialInfo
+            present(
+                R.storyboard.main
+                    .chooseCityViewController()!
+                    .apply {
+                        $0.initialInfo = initialInfo
+                        $0.selectCity = .init {
+                            dispatch(.updateCityFromPicker($0))
+                        }
+                    },
+                animated: true
             )
         case .selectGroup(let initialInfo):
-            performSegue(
-                withIdentifier: segueHelper.groupProducts,
-                sender: initialInfo
+            navigationController?.pushViewController(
+                R.storyboard.main
+                    .productsListViewController()!
+                    .apply {
+                        $0.initialInfo = initialInfo
+                    },
+                animated: true
             )
         }
     }
