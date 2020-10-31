@@ -139,9 +139,9 @@ class CameraViewController: UIViewController {
                 }
                 
             case .configurationFailed:
-                presentError(
-                    NSError(description: "Alert message when something goes wrong during capture session configuration"),
-                    title: "Unable to capture media"
+                present(
+                    error: NSError(description: "Alert message when something goes wrong during capture session configuration"),
+                    alertTitle: "Unable to capture media"
                 )
             }
         }
@@ -200,9 +200,9 @@ class CameraViewController: UIViewController {
         do {
             try addVideoInput()
         } catch {
-            presentError(
-                error,
-                title: "Couldn't create video device input"
+            present(
+                error: error,
+                alertTitle: "Couldn't create video device input"
             )
             setupResult = .configurationFailed
             return
@@ -470,8 +470,8 @@ class CameraViewController: UIViewController {
                     
                 case .failure(let error):
                     print(error)
-                    self?.presentError(
-                        NSError(
+                    self?.present(
+                        error: NSError(
                             description: "Group not found or doesn't have markets"
                         )
                     )
@@ -490,8 +490,8 @@ class CameraViewController: UIViewController {
                     
                 case .failure(let error):
                     print(error)
-                    self?.presentError(
-                        NSError(
+                    self?.present(
+                        error: NSError(
                             description: "Product not found"
                         )
                     )
@@ -557,9 +557,9 @@ extension CameraViewController: AVCaptureFileOutputRecordingDelegate {
         if let error = error as NSError? {
             success = (error.userInfo[AVErrorRecordingSuccessfullyFinishedKey] as AnyObject).boolValue == true
             if !success {
-                presentError(
-                    error,
-                    title: "Video recording failed"
+                present(
+                    error: error,
+                    alertTitle: "Video recording failed"
                     )
             }
         }
@@ -817,9 +817,9 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
         if let data = photo.fileDataRepresentation() {
             process(photoData: data)
         } else {
-            presentError(
-                error,
-                title: "Take photo failed"
+            present(
+                error: error,
+                alertTitle: "Take photo failed"
             )
         }
     }
@@ -840,9 +840,9 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
                 previewPhotoSampleBuffer: previewPhotoSampleBuffer
             )
         else {
-            presentError(
-                error,
-                title: "Take photo failed"
+            present(
+                error: error,
+                alertTitle: "Take photo failed"
             )
             return
         }

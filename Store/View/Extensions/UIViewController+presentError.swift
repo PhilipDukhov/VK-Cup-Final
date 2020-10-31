@@ -9,13 +9,13 @@ import UIKit
 
 extension UIViewController {
     @discardableResult
-    func presentError(
-        _ error: Error?,
-        title: String? = nil
+    func present(
+        error: Error?,
+        alertTitle: String? = nil
     ) -> UIAlertController {
         let block = { [self] () -> UIAlertController in
             let alert = UIAlertController(
-                title: title ?? "Failed",
+                title: alertTitle ?? "Failed",
                 message: error?.localizedDescription,
                 preferredStyle: .alert
             )

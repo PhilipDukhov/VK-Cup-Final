@@ -60,7 +60,7 @@ class ProductsListViewController: UIViewController {
         }
         props.navigationMsg.mapOnMain(handleNavigationMsg)
         props.error.map {
-            presentError($0)
+            present(error: $0)
             dispatch(.setError(nil))
         }
     }

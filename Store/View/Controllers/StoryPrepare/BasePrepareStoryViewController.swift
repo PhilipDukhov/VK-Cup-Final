@@ -195,7 +195,7 @@ class BasePrepareStoryViewController: UIViewController {
             
         case .failure(let error):
             state = .idle
-            presentError(error)
+            present(error: error)
         }
     }
     

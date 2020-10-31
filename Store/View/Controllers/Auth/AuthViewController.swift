@@ -24,10 +24,10 @@ class AuthViewController: UIViewController {
                 switch result {
                 case .success:
 //                    self?.testVideoUpload()
-//                    self?.openRecorder()
-                    self?.navigationController?.replaceTopController(
-                        with: R.storyboard.main.marketListViewController()!
-                    )
+                    self?.openRecorder()
+//                    self?.navigationController?.replaceTopController(
+//                        with: R.storyboard.main.marketListViewController()!
+//                    )
                     
                 case .failure:
                     self?.authorize()
@@ -110,7 +110,7 @@ class AuthViewController: UIViewController {
     
     private func getProduct(completion: @escaping (Product) -> Void) {
         linkResolverApiManager.getProduct(
-            productId: "-184513691_4707020"
+            productId: "-30232475_4118841"
         ) {
             (try? $0.get()).map(completion)
         }
