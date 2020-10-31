@@ -33,7 +33,7 @@ class ChooseCityViewController: UIViewController {
         props: ChooseCityLeaf.Props,
         dispatch: Dispatch<ChooseCityLeaf.Msg>
     ) {
-        collectionViewWrapper.sections = [
+        collectionViewWrapper.update(sections: [
             .chooseCityListSection(
                 rows: props.cities.map { city in
                     ChooseCityCellCellModel(
@@ -44,7 +44,7 @@ class ChooseCityViewController: UIViewController {
                     )
                 }
             )
-        ]
+        ])
         collectionViewWrapper.didSelect = { [weak self] _, indexPath in
             self.map {
                 $0.selectCity.execute(props.cities[indexPath.item])

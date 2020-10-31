@@ -202,12 +202,6 @@ class CameraViewController: UIViewController {
         session.sessionPreset = .photo
         defer {
             session.commitConfiguration()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [self] in
-                beginRecording()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [self] in
-                    endRecording()
-                }
-            }
         }
         do {
             try addVideoInput()

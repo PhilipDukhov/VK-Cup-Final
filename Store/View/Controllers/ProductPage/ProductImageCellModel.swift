@@ -15,7 +15,9 @@ struct ProductImageCellModel: CollectionDescriptiveModel {
     
     init(props: Cell.Props) {
         cellHeightForWidth = { $0 }
-        descriptor = .init { (cell: Cell) in
+        descriptor = .init(
+            hashableBase: props
+        ) { (cell: Cell) in
             cell.props = props
         }
     }

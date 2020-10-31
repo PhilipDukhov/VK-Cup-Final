@@ -8,7 +8,7 @@
 import UIKit
 
 class ImageTitleSubtitleCell: UICollectionViewCell {
-    struct Props {
+    struct Props: Hashable {
         let photoSizes: PhotoSizes?
         let title: String
         let subtitle: String

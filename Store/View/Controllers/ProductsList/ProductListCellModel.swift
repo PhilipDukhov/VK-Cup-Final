@@ -15,7 +15,9 @@ struct ProductListCellModel: CollectionDescriptiveModel {
     
     init(props: Cell.Props) {
         cellHeightForWidth = { $0 + 58 }
-        descriptor = .init { (cell: Cell) in
+        descriptor = .init(
+            hashableBase: props
+        ) { (cell: Cell) in
             cell.props = props
             cell.imageViewCornerRadius = .static(10)
         }

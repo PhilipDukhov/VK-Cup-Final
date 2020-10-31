@@ -8,7 +8,7 @@
 import UIKit
 
 class ImageCell: UICollectionViewCell {
-    struct Props {
+    struct Props: Hashable {
         let photoSizes: PhotoSizes?
     }
     

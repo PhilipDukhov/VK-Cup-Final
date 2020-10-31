@@ -42,7 +42,7 @@ class ProductsListViewController: UIViewController {
         props: ProductsListLeaf.Props,
         dispatch: @escaping Dispatch<ProductsListLeaf.Msg>
     ) {
-        collectionViewWrapper.sections = [
+        collectionViewWrapper.update(sections: [
             .productsListSection(
                 rows: props.products.map { product in
                     ProductListCellModel(
@@ -54,7 +54,7 @@ class ProductsListViewController: UIViewController {
                     )
                 }
             )
-        ]
+        ])
         collectionViewWrapper.didSelect = { _, indexPath in
             dispatch(.selectProduct(props.products[indexPath.item]))
         }

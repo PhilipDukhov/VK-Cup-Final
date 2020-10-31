@@ -64,7 +64,7 @@ class MarketListViewController: UIViewController {
                 }
             )
         }
-        collectionViewWrapper.sections = [
+        collectionViewWrapper.update(sections: [
             .marketListSection(
                 rows: props.groups.map { group in
                     MarketListCellModel(
@@ -76,7 +76,7 @@ class MarketListViewController: UIViewController {
                     )
                 }
             )
-        ]
+        ])
         collectionViewWrapper.didSelect = { _, indexPath in
             dispatch(.selectGroup(props.groups[indexPath.item]))
         }

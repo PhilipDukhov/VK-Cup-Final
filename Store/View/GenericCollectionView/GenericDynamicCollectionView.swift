@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import DeepDiff
 
 class CollectionViewWrapper: NSObject {
     typealias Cell = UICollectionViewCell
@@ -49,16 +50,26 @@ class CollectionViewWrapper: NSObject {
     }
     
     func update(
-        sections: [Section],
-        difference: [IndexPathDifference]? = nil
+        sections: [Section]
     ) {
-        guard let difference = difference else {
-            self.sections = sections
-            return
-        }
-        if difference.isEmpty {
-            return
-        }
+        let difference = sections
+            .enumerated()
+            .reduce(
+                into: [IndexPathDifference]()
+            ) { result, pair in
+                let oldItems = self.sections[pair.offset].items
+                    .map { $0.descriptor }
+                pair.element.items
+                    .map { $0.descriptor }
+                    .indexPathDifference(
+                        for: pair.offset,
+                        from: oldItems
+                    ).map {
+                        result += $0
+                    }
+            }
+        print(difference)
+        guard !difference.isEmpty else { return }
         executeOnMainQueue { [self] in
             collectionView.performBatchUpdates {
                 _sections = sections

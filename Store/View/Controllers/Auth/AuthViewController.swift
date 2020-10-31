@@ -24,10 +24,10 @@ class AuthViewController: UIViewController {
                 switch result {
                 case .success:
 //                    self?.testVideoUpload()
-                    self?.openRecorder()
-//                    self?.navigationController?.replaceTopController(
-//                        with: R.storyboard.main.marketListViewController()!
-//                    )
+//                    self?.openRecorder()
+                    self?.navigationController?.replaceTopController(
+                        with: R.storyboard.main.marketListViewController()!
+                    )
                     
                 case .failure:
                     self?.authorize()

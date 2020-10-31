@@ -15,7 +15,9 @@ struct MarketListCellModel: CollectionDescriptiveModel {
     
     init(props: Cell.Props) {
         cellHeightForWidth = { _ in 60 }
-        descriptor = .init { (cell: Cell) in
+        descriptor = .init(
+            hashableBase: props
+        ) { (cell: Cell) in
             cell.props = props
             cell.imageViewCornerRadius = .circle
         }

@@ -13,14 +13,16 @@ struct ChooseCityCellCellModel: CollectionDescriptiveModel {
     
     init(props: ChooseCityCell.Props) {
         cellHeightForWidth = { _ in 60 }
-        descriptor = .init { (cell: ChooseCityCell) in
+        descriptor = .init(
+            hashableBase: props
+        ) { (cell: ChooseCityCell) in
             cell.props = props
         }
     }
 }
 
 class ChooseCityCell: UICollectionViewCell {
-    struct Props {
+    struct Props: Hashable {
         let title: String
         let selected: Bool
     }
