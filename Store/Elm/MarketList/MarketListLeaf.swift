@@ -35,6 +35,7 @@ enum MarketListLeaf {
         case updateMarketQuery(String)
         case requestMarketGroupsUpdate
         case chooseCity
+        case clearNavigationMsg
         case selectGroup(Group)
     }
     
@@ -121,6 +122,8 @@ enum MarketListLeaf {
                     group: group
                 )
             )
+        case .clearNavigationMsg:
+            newModel.navigationMsg = nil
         }
         return (newModel, effect)
     }

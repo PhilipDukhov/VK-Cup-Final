@@ -80,7 +80,10 @@ class MarketListViewController: UIViewController {
         collectionViewWrapper.didSelect = { _, indexPath in
             dispatch(.selectGroup(props.groups[indexPath.item]))
         }
-        props.navigationMsg.mapOnMain(handleNavigationMsg)
+        props.navigationMsg.mapOnMain { [self] in
+            handleNavigationMsg($0)
+            dispatch(.clearNavigationMsg)
+        }
         props.error.map {
             present(error: $0)
             dispatch(.setError(nil))
@@ -88,7 +91,7 @@ class MarketListViewController: UIViewController {
     }
     
     private func handleNavigationMsg(
-        navigationMsg: MarketListLeaf.NavigationMsg
+        _ navigationMsg: MarketListLeaf.NavigationMsg
     ) {
         switch navigationMsg {
         case .chooseCity(let initialInfo):

@@ -58,7 +58,10 @@ class ProductsListViewController: UIViewController {
         collectionViewWrapper.didSelect = { _, indexPath in
             dispatch(.selectProduct(props.products[indexPath.item]))
         }
-        props.navigationMsg.mapOnMain(handleNavigationMsg)
+        props.navigationMsg.mapOnMain { [self] in
+            handleNavigationMsg($0)
+            dispatch(.clearNavigationMsg)
+        }
         props.error.map {
             present(error: $0)
             dispatch(.setError(nil))
@@ -66,7 +69,7 @@ class ProductsListViewController: UIViewController {
     }
     
     private func handleNavigationMsg(
-        navigationMsg: ProductsListLeaf.NavigationMsg
+        _ navigationMsg: ProductsListLeaf.NavigationMsg
     ) {
         switch navigationMsg {
         case .selectProduct(let initialInfo):

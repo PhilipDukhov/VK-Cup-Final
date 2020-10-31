@@ -30,6 +30,7 @@ class ProductsListLeaf {
         case requestProductsUpdate
         case updateProductList([Product])
         case selectProduct(Product)
+        case clearNavigationMsg
     }
     
     enum NavigationMsg {
@@ -58,6 +59,9 @@ class ProductsListLeaf {
         switch msg {
         case .setError(let error):
             newModel.error = error
+            
+        case .clearNavigationMsg:
+            newModel.navigationMsg = nil
             
         case .requestProductsUpdate:
             effect = model.getProductListEffect(group: model.initialInfo.group)
