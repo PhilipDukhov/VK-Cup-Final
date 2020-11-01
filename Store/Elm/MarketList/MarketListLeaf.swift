@@ -207,9 +207,10 @@ extension Model {
     fileprivate var getCurrentUserInfoEffect: Effect<Msg> {
         { dispatch in
             databaseQueue.async {
-                if let userInfo = (managedObjectContext
-                                    .get(fetchLimit: 1) as [UserInfo])
-                    .first
+                if let userInfo = (
+                    managedObjectContext
+                        .get(fetchLimit: 1) as [UserInfo]
+                ).first
                 {
                     dispatch(.updateUserInfo(userInfo))
                 } else {
@@ -272,10 +273,11 @@ extension Model {
         city: City
     ) -> Effect<Msg> {
         { dispatch in
-            let updateGroups = {
-                updateSortedGroups(query: query, city: city, dispatch: dispatch)
-            }
-            updateGroups()
+            updateSortedGroups(
+                query: query,
+                city: city,
+                dispatch: dispatch
+            )
             apiManager.getMarketGroups(
                 query: query,
                 city: city
@@ -283,7 +285,11 @@ extension Model {
                 result.get(
                     errorDispatch: dispatch
                 ) { _ in
-                    updateGroups()
+                    updateSortedGroups(
+                        query: query,
+                        city: city,
+                        dispatch: dispatch
+                    )
                 }
             }
         }

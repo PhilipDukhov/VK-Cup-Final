@@ -172,7 +172,10 @@
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="zdb-EF-wmY" secondAttribute="height" id="ycr-Js-n5u"/>
                                         </constraints>
-                                        <state key="normal" title="Button" image="dismiss_24"/>
+                                        <state key="normal" image="dismiss_24"/>
+                                        <connections>
+                                            <action selector="closeButtonHandler" destination="gaV-nT-95V" eventType="touchUpInside" id="ccO-od-AVK"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

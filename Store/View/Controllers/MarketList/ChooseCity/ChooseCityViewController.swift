@@ -30,6 +30,10 @@ class ChooseCityViewController: UIViewController {
         }
     }
     
+    @IBAction private func closeButtonHandler() {
+        dismiss(animated: true)
+    }
+    
     private func render(
         props: ChooseCityLeaf.Props,
         dispatch: Dispatch<ChooseCityLeaf.Msg>
