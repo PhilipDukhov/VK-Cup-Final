@@ -20,7 +20,7 @@ class ProductsListApiManager {
         group: Group,
         completion: @escaping (Result<[Product], BaseApiManager.Error>) -> Void
     ) {
-        baseApiManager.sendHandleAndParse(
+        baseApiManager.sendHandleAndParseModel(
             VK.API.Market.get([
                 .ownerId: "-\(group.id)",
                 .extended: 1,

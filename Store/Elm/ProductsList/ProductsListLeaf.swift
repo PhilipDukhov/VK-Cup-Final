@@ -144,14 +144,13 @@ extension Model {
             ),
         ]
         databaseQueue.async {
-            dispatch(
-                .updateProductList(
-                    managedObjectContext
-                        .get(
-                            predicate: predicate,
-                            sortDescriptors: sortDescriptors
-                        )
+            let res: [Product] = managedObjectContext
+                .get(
+                    predicate: predicate,
+                    sortDescriptors: sortDescriptors
                 )
+            dispatch(
+                .updateProductList(res)
             )
         }
     }

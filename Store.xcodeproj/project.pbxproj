@@ -309,6 +309,11 @@
 		D55DCB86254E3632002529D2 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				D5B5D93F2548C57400A73809 /* Group.swift */,
+				D5B5D9162548610C00A73809 /* Product.swift */,
+				D5B5D9422548C66700A73809 /* City.swift */,
+				D5B5D94E2548E20200A73809 /* Country.swift */,
+				D5F2072B254913EC00F9B71F /* UserInfo.swift */,
 				D55DCB82254E35D3002529D2 /* coredata.xcdatamodeld */,
 				D55DCB90254E3C12002529D2 /* Base.swift */,
 			);
@@ -330,11 +335,6 @@
 		D5B5D90B25485E1600A73809 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				D5B5D93F2548C57400A73809 /* Group.swift */,
-				D5B5D9162548610C00A73809 /* Product.swift */,
-				D5B5D9422548C66700A73809 /* City.swift */,
-				D5B5D94E2548E20200A73809 /* Country.swift */,
-				D5F2072B254913EC00F9B71F /* UserInfo.swift */,
 				D55DCB86254E3632002529D2 /* CoreData */,
 				D5B5D94A2548DFB500A73809 /* Price.swift */,
 				D5B5D9472548DA3F00A73809 /* Photo.swift */,
