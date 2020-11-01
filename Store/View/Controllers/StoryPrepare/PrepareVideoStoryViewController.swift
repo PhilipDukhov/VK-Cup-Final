@@ -58,7 +58,6 @@ class PrepareVideoStoryViewController: BasePrepareStoryViewController {
            !asset.tracks(withMediaType: .audio).isEmpty
         {
             muteButton.isHidden = false
-            toggleAudioButtonTap(muteButton)
         } else {
             muteButton.isHidden = true
         }

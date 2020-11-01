@@ -181,6 +181,10 @@ class BasePrepareStoryViewController: UIViewController {
                 viewControllers,
                 animated: true
             )
+            $0.setNavigationBarHidden(
+                false,
+                animated: true
+            )
         }
     }
     

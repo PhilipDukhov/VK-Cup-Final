@@ -123,8 +123,7 @@ extension Model {
             apiManager.getProducts(group: group) { result in
                 result.get(
                     errorDispatch: dispatch
-                ) { products in
-                    print(group.id, products.map { $0.ownerId })
+                ) { _ in
                     updateSortedProducts(group: group, dispatch: dispatch)
                 }
             }
@@ -136,7 +135,7 @@ extension Model {
         dispatch: @escaping Dispatch<Msg>
     ) {
         let predicate = NSPredicate(
-            format: "ownerId == '-\(group.id)'"
+            format: "ownerId == '\(-group.id)'"
         )
         let sortDescriptors = [
             NSSortDescriptor(
@@ -149,7 +148,7 @@ extension Model {
                 .updateProductList(
                     managedObjectContext
                         .get(
-//                            predicate: predicate,
+                            predicate: predicate,
                             sortDescriptors: sortDescriptors
                         )
                 )

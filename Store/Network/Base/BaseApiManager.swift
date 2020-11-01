@@ -100,7 +100,6 @@ class BaseApiManager {
             }
         }
         .onError {
-            print($0)
             completion(
                 .failure(
                     .with(vkError: $0)
@@ -153,7 +152,6 @@ class BaseApiManager {
                         fetchRequest: fetchRequest
                     )
                 )
-                print(newObjects.map { $0.id })
                 try managedObjectContext?.save()
             } catch {
                 print(error)
