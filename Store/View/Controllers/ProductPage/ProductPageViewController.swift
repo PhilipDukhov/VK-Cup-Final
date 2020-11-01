@@ -27,7 +27,7 @@ class ProductPageViewController: UIViewController {
         titleLabel.text = initialInfo.product.title
         title = initialInfo.product.title
         priceLabel.text = initialInfo.product.price.text
-        descriptionLabel.text = initialInfo.product.description
+        descriptionLabel.text = initialInfo.product.productDescription
         pageControl.numberOfPages = initialInfo.product.photos.count
         if pageControl.numberOfPages == 1 {
             pageControl.numberOfPages = 0
