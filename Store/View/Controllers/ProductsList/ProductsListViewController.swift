@@ -23,11 +23,23 @@ class ProductsListViewController: UIViewController {
             collectionView: collectionView,
             sections: [.productsListSection()]
         )
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         runtime = ProductsListLeaf.runtime(
             initialInfo: initialInfo
         ) { [weak self] in
             self?.render(props: $0, dispatch: $1)
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        collectionViewWrapper.update(sections: [
+            .productsListSection()
+        ])
+        runtime = nil
+        super.viewDidDisappear(animated)
     }
     
     private func render(

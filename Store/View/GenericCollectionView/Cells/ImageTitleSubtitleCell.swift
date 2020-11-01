@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ImageTitleSubtitleCell: UICollectionViewCell {
+class ImageTitleSubtitleCell: UICollectionViewCell, Clearable {
     struct Props: Hashable {
         let photoSizes: PhotoSizes?
         let title: String
@@ -19,6 +19,13 @@ class ImageTitleSubtitleCell: UICollectionViewCell {
         didSet {
             render()
         }
+    }
+    
+    var childrenToClear: [Clearable] {
+        [imageView,
+         titleLabel,
+         subtitleLabel,
+        ]
     }
     
     @IBOutlet private var imageView: UIImageView!

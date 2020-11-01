@@ -194,6 +194,14 @@ extension CollectionViewWrapper: UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(
         _ collectionView: UICollectionView,
+        didEndDisplaying cell: UICollectionViewCell,
+        forItemAt indexPath: IndexPath
+    ) {
+        (cell as? Clearable)?.clear()
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
         didSelectItemAt indexPath: IndexPath
     ) {
         didSelect?(item(for: indexPath), indexPath)

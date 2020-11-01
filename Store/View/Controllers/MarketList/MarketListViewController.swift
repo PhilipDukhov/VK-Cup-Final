@@ -23,9 +23,21 @@ class MarketListViewController: UIViewController {
         )
         titleView.frame = .init(origin: .zero, size: .init(width: 300, height: 100))
         navigationItem.titleView = titleView
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         runtime = MarketListLeaf.runtime { [weak self] in
             self?.render(props: $0, dispatch: $1)
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        collectionViewWrapper.update(sections: [
+            .marketListSection()
+        ])
+        runtime = nil
+        super.viewDidDisappear(animated)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

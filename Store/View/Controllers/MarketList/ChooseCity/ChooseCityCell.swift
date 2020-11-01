@@ -21,7 +21,7 @@ struct ChooseCityCellCellModel: CollectionDescriptiveModel {
     }
 }
 
-class ChooseCityCell: UICollectionViewCell {
+class ChooseCityCell: UICollectionViewCell, Clearable {
     struct Props: Hashable {
         let title: String
         let selected: Bool
@@ -31,6 +31,12 @@ class ChooseCityCell: UICollectionViewCell {
         didSet {
             render()
         }
+    }
+    
+    var childrenToClear: [Clearable] {
+        [titleLabel,
+         selectedImageView,
+        ]
     }
     
     @IBOutlet private var titleLabel: UILabel!

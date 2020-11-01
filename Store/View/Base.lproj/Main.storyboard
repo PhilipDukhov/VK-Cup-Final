@@ -324,7 +324,9 @@
                             <constraint firstItem="N77-gF-GlY" firstAttribute="leading" secondItem="yhj-ZR-OAb" secondAttribute="leading" constant="12" id="wVR-e1-OwT"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Товары общества" id="CVx-Yz-QqP"/>
+                    <navigationItem key="navigationItem" title="Товары общества" id="CVx-Yz-QqP">
+                        <barButtonItem key="backBarButtonItem" title=" " id="5e2-AX-SUQ"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="N77-gF-GlY" id="Mmc-wL-JaM"/>
                         <segue destination="qQk-FA-RGI" kind="show" identifier="selectProduct" id="XbH-0h-HDQ"/>

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ImageCell: UICollectionViewCell {
+class ImageCell: UICollectionViewCell, Clearable {
     struct Props: Hashable {
         let photoSizes: PhotoSizes?
     }
@@ -18,7 +18,12 @@ class ImageCell: UICollectionViewCell {
         }
     }
     
-    @IBOutlet private var imageView: UIImageView!
+    var childrenToClear: [Clearable] {
+        [imageView,
+        ]
+    }
+    
+    @IBOutlet private var imageView: UIImageView!    
     
     override func layoutSubviews() {
         super.layoutSubviews()
