@@ -1,0 +1,6 @@
+${PODS_ROOT}/Target Support Files/Pods-Store/Pods-Store-frameworks.sh
+${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
+${BUILT_PRODUCTS_DIR}/DeepDiff/DeepDiff.framework
+${BUILT_PRODUCTS_DIR}/Player/Player.framework
+${BUILT_PRODUCTS_DIR}/R.swift.Library/Rswift.framework
+${BUILT_PRODUCTS_DIR}/SwiftyVK/SwiftyVK.framework
