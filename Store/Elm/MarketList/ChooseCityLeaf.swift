@@ -95,16 +95,8 @@ class ChooseCityLeaf {
 
 extension Model: ModelViewable {
     var buildProps: ChooseCityLeaf.Props {
-        var cities = (self.cities ?? [])
-        cities.insertOrMove(
-            initialInfo.selectedCity,
-            at: 0
-        )
-        initialInfo.userInfo.city.map {
-            cities.insertOrMove($0, at: 0)
-        }
         return .init(
-            cities: cities,
+            cities: cities ?? [],
             selectedCity: initialInfo.selectedCity,
             error: error
         )
@@ -116,20 +108,19 @@ extension Model {
         country: Country
     ) -> Effect<Msg>  {
         { dispatch in
+            updateSortedCities(dispatch)
             apiManager.getCities(country: country) { result in
                 result.get(
                     errorDispatch: dispatch
-                ) { cities in
-                    dispatch(.updateCitiesList(cities))
+                ) { _ in
+                    updateSortedCities(dispatch)
                 }
             }
         }
     }
     
     fileprivate func updateSortedCities(
-        query: String,
-        city: City,
-        dispatch: @escaping Dispatch<Msg>
+        _ dispatch: @escaping Dispatch<Msg>
     ) {
         databaseQueue.async {
             let sortDescriptors = [
@@ -138,12 +129,23 @@ extension Model {
                     ascending: true
                 ),
             ]
+            var cities: [City] = managedObjectContext
+                .get(
+                    sortDescriptors: sortDescriptors
+                )
+            cities = cities.enumerated().filter {
+                $0.offset == 0 || $0.element.id != cities[$0.offset - 1].id
+            }.map { $0.element }
+            cities.insertOrMove(
+                initialInfo.selectedCity,
+                at: 0
+            )
+            initialInfo.userInfo.city.map {
+                cities.insertOrMove($0, at: 0)
+            }
             dispatch(
                 .updateCitiesList(
-                    managedObjectContext
-                        .get(
-                            sortDescriptors: sortDescriptors
-                        )
+                    cities
                 )
             )
         }

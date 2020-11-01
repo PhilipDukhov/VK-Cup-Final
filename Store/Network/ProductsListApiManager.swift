@@ -7,9 +7,14 @@
 
 import Foundation
 import SwiftyVK
+import CoreData
 
 class ProductsListApiManager {
-    private let baseApiManager = BaseApiManager()
+    private let baseApiManager: BaseApiManager
+    
+    init(context: NSManagedObjectContext) {
+        baseApiManager = BaseApiManager(context: context)
+    }
     
     func getProducts(
         group: Group,

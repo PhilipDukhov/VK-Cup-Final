@@ -81,21 +81,23 @@ class BaseApiManager {
     ) {
         apiMethod.onSuccess { [weak self] data in
             guard let self = self else { return }
-            let result: [R]
-            switch container {
-            case .items:
-                result = try self.decoder.decode(
-                    ResponseItems<R>.self,
-                    from: data
-                ).items
-                
-            case .response:
-                result = try self.decoder.decode(
-                    [R].self,
-                    from: data
-                )
+            try databaseQueue.sync {
+                let result: [R]
+                switch container {
+                case .items:
+                    result = try self.decoder.decode(
+                        ResponseItems<R>.self,
+                        from: data
+                    ).items
+                    
+                case .response:
+                    result = try self.decoder.decode(
+                        [R].self,
+                        from: data
+                    )
+                }
+                completion(.success(result))
             }
-            completion(.success(result))
         }
         .onError {
             print($0)
@@ -151,6 +153,7 @@ class BaseApiManager {
                         fetchRequest: fetchRequest
                     )
                 )
+                print(newObjects.map { $0.id })
                 try managedObjectContext?.save()
             } catch {
                 print(error)

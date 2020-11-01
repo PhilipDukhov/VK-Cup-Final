@@ -176,45 +176,49 @@ extension Model: ModelViewable {
 extension Model {
     fileprivate mutating func initCountryAndCityFromUserDefaultsIfNeeded(
     ) {
-        guard
-            selectedCountry == nil,
-            let countryId = UserDefaults.standard.string(
+        databaseQueue.sync {
+            guard
+                selectedCountry == nil,
+                let countryId = UserDefaults.standard.string(
+                    forKey: .selectedCountryIdKey
+                ), let country = (managedObjectContext
+                                    .get(
+                                        predicate: NSPredicate(
+                                            format: "id == '\(countryId)'"
+                                        ),
+                                        fetchLimit: 1
+                                    ) as [Country]).first
+            else { return }
+            selectedCountry = country
+            guard let cityId = UserDefaults.standard.string(
                 forKey: .selectedCountryIdKey
-            ), let country = (managedObjectContext
-                                .get(
-                                    predicate: NSPredicate(
-                                        format: "id == '\(countryId)'"
-                                    ),
-                                    fetchLimit: 1
-                                ) as [Country]).first
-        else { return }
-        selectedCountry = country
-        guard let cityId = UserDefaults.standard.string(
-            forKey: .selectedCountryIdKey
-        ), let city = (managedObjectContext
-                        .get(
-                            predicate: NSPredicate(
-                                format: "id == '\(cityId)'"
-                            ),
-                            fetchLimit: 1
-                        ) as [City]).first
-        else { return }
-        selectedCity = city
+            ), let city = (managedObjectContext
+                            .get(
+                                predicate: NSPredicate(
+                                    format: "id == '\(cityId)'"
+                                ),
+                                fetchLimit: 1
+                            ) as [City]).first
+            else { return }
+            selectedCity = city
+        }
     }
     
     fileprivate var getCurrentUserInfoEffect: Effect<Msg> {
         { dispatch in
-            if let userInfo = (managedObjectContext
-                .get(fetchLimit: 1) as [UserInfo])
-                .first
-            {
-                dispatch(.updateUserInfo(userInfo))
-            } else {
-                apiManager.getCurrentUserLocationInfo { result in
-                    result.get(
-                        errorDispatch: dispatch
-                    ) { userInfo in
-                        dispatch(.updateUserInfo(userInfo))
+            databaseQueue.async {
+                if let userInfo = (managedObjectContext
+                                    .get(fetchLimit: 1) as [UserInfo])
+                    .first
+                {
+                    dispatch(.updateUserInfo(userInfo))
+                } else {
+                    apiManager.getCurrentUserLocationInfo { result in
+                        result.get(
+                            errorDispatch: dispatch
+                        ) { userInfo in
+                            dispatch(.updateUserInfo(userInfo))
+                        }
                     }
                 }
             }

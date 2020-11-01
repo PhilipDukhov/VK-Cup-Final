@@ -26,7 +26,7 @@ extension Identifiable {
 
 extension Array where Element: Identifiable {
     mutating func insertOrMove(_ newElement: Element, at i: Int) {
-        firstIndex(of: newElement).map {
+        firstIndex { $0.id == newElement.id } .map {
             _ = remove(at: $0)
         }
         insert(newElement, at: i)

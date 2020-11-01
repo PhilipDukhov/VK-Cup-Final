@@ -28,7 +28,8 @@ class ProductsListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         runtime = ProductsListLeaf.runtime(
-            initialInfo: initialInfo
+            initialInfo: initialInfo,
+            context: managedObjectContext
         ) { [weak self] in
             self?.render(props: $0, dispatch: $1)
         }

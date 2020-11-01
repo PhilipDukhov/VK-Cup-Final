@@ -20,7 +20,7 @@ class ChooseCityApiManager {
         country: Country,
         completion: @escaping (Result<[City], BaseApiManager.Error>) -> Void
     ) {
-        baseApiManager.sendHandleAndParseModel(
+        baseApiManager.sendHandleAndParse(
             VK.API.Database.getCities([
                 .countryId: country.id,
             ].stringify),

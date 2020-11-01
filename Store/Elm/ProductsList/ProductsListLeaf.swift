@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 private typealias Msg = ProductsListLeaf.Msg
 private typealias Model = ProductsListLeaf.Model
@@ -22,7 +23,18 @@ class ProductsListLeaf {
         
         var navigationMsg: NavigationMsg?
         
-        let apiManager = ProductsListApiManager()
+        let apiManager: ProductsListApiManager
+        
+        let managedObjectContext: NSManagedObjectContext
+        
+        init(
+            initialInfo: InitialInfo,
+            context: NSManagedObjectContext
+        ) {
+            self.initialInfo = initialInfo
+            managedObjectContext = context
+            apiManager = .init(context: context)
+        }
     }
     
     enum Msg {
@@ -44,11 +56,12 @@ class ProductsListLeaf {
     }
     
     static func initial(
-        initialInfo: Model.InitialInfo
+        initialInfo: Model.InitialInfo,
+        context: NSManagedObjectContext
     ) -> (() -> (Model, Effect<Msg>?))
     {
         return {
-            (Model(initialInfo: initialInfo),
+            (Model(initialInfo: initialInfo, context: context),
              { $0(.requestProductsUpdate) })
         }
     }
@@ -80,10 +93,11 @@ class ProductsListLeaf {
     // he only needs to store this class while rendering needed
     static func runtime(
         initialInfo: Model.InitialInfo,
+        context: NSManagedObjectContext,
         render: @escaping Runtime<Model, Msg>.Render
     ) -> Any {
         Runtime(
-            initial: initial(initialInfo: initialInfo),
+            initial: initial(initialInfo: initialInfo, context: context),
             update: update,
             render: render
         )
@@ -105,13 +119,41 @@ extension Model {
         group: Group
     ) -> Effect<Msg>  {
         { dispatch in
+            updateSortedProducts(group: group, dispatch: dispatch)
             apiManager.getProducts(group: group) { result in
                 result.get(
                     errorDispatch: dispatch
                 ) { products in
-                    dispatch(.updateProductList(products))
+                    print(group.id, products.map { $0.ownerId })
+                    updateSortedProducts(group: group, dispatch: dispatch)
                 }
             }
+        }
+    }
+    
+    fileprivate func updateSortedProducts(
+        group: Group,
+        dispatch: @escaping Dispatch<Msg>
+    ) {
+        let predicate = NSPredicate(
+            format: "ownerId == '-\(group.id)'"
+        )
+        let sortDescriptors = [
+            NSSortDescriptor(
+                key: #keyPath(Product.id),
+                ascending: false
+            ),
+        ]
+        databaseQueue.async {
+            dispatch(
+                .updateProductList(
+                    managedObjectContext
+                        .get(
+//                            predicate: predicate,
+                            sortDescriptors: sortDescriptors
+                        )
+                )
+            )
         }
     }
 }

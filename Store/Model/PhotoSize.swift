@@ -98,6 +98,11 @@ struct PhotoSizes: Codable, Hashable {
             .sorted()
     }
     
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(sizes)
+    }
+    
     func bestQualityPhoto(forContainer size: CGSize) -> PhotoSize? {
         sizes.first {
             $0.size.width > size.width * UIScreen.main.scale &&

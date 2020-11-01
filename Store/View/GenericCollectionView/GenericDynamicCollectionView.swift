@@ -54,26 +54,26 @@ class CollectionViewWrapper: NSObject {
     func update(
         sections: [Section]
     ) {
-        let difference = sections
-            .enumerated()
-            .reduce(
-                into: [IndexPathDifference]()
-            ) { result, pair in
-                let oldItems = self.sections[pair.offset].items
-                    .map { $0.descriptor }
-                pair.element.items
-                    .map { $0.descriptor }
-                    .indexPathDifference(
-                        for: pair.offset,
-                        from: oldItems
-                    ).map {
-                        result += $0
-                    }
-            }
-        guard !difference.isEmpty else { return }
         executeOnMainQueue { [self] in
+            let difference = sections
+                .enumerated()
+                .reduce(
+                    into: [IndexPathDifference]()
+                ) { result, pair in
+                    let oldItems = self.sections[pair.offset].items
+                        .map { $0.descriptor }
+                    pair.element.items
+                        .map { $0.descriptor }
+                        .indexPathDifference(
+                            for: pair.offset,
+                            from: oldItems
+                        ).map {
+                            result += $0
+                        }
+                }
+            _sections = sections
+            guard !difference.isEmpty else { return }
             collectionView.performBatchUpdates {
-                _sections = sections
                 for change in difference {
                     switch change {
                     case let .move(at, to):
