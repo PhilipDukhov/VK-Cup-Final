@@ -6,16 +6,21 @@
 //
 
 import Foundation
+import CoreData
 
-struct City: Codable, Identifiable {
-    let id: Int
-    let title: String
+class City: ModelType { 
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case inflectedTitle
+    }
     
-    let inflectedTitle: String?
-    
-    init(city: City, inflectedTitle: String) {
-        id = city.id
-        title = city.title
-        self.inflectedTitle = inflectedTitle
+    required convenience init(
+        from decoder: Decoder
+    ) throws {
+        self.init(context: try decoder.managedObjectContext())
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int64.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
     }
 }

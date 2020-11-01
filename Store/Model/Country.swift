@@ -7,7 +7,18 @@
 
 import Foundation
 
-struct Country: Codable, Identifiable {
-    let id: Int
-    let title: String
+class Country: ModelType {
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+    }
+    
+    required convenience init(
+        from decoder: Decoder
+    ) throws {
+        self.init(context: try decoder.managedObjectContext())
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int64.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+    }
 }

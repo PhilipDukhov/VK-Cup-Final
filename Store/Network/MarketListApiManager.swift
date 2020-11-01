@@ -7,9 +7,14 @@
 
 import Foundation
 import SwiftyVK
+import CoreData
 
 class MarketListApiManager {
-    private let baseApiManager = BaseApiManager()
+    private let baseApiManager: BaseApiManager
+    
+    init(context: NSManagedObjectContext) {
+        baseApiManager = BaseApiManager(context: context)
+    }
     
     func getCurrentUserLocationInfo(
         completion: @escaping (Result<UserInfo, BaseApiManager.Error>) -> Void
@@ -28,11 +33,11 @@ class MarketListApiManager {
         city: City,
         completion: @escaping (Result<[Group], BaseApiManager.Error>) -> Void
     ) {
-        baseApiManager.sendHandleAndParse(
+        baseApiManager.sendHandleAndParseModel(
             VK.API.Custom.remote(
                 method: "getMarketGroups",
                 parameters: [
-                    "q": "\(query.isEmpty ? "Одежда" : query)",
+                    "q": "\(query.isEmpty ? "*" : query)",
                     "cityId": city.id
                 ].stringify
             ),
@@ -87,7 +92,7 @@ class MarketListApiManager {
         let morpherURL = URL(string: "https://ws3.morpher.ru/russian/declension")!
         let request = URLRequest(
             url: morpherURL.appendingQueryParameters(
-                ["s": "\(city.title)",
+                ["s": city.title!,
                  "format": "json"]
             ),
             cachePolicy: .returnCacheDataElseLoad
@@ -102,14 +107,8 @@ class MarketListApiManager {
                 completion(.failure(.emptyResponse))
                 return
             }
-            completion(
-                .success(
-                    City(
-                        city: city,
-                        inflectedTitle: inflectedTitle
-                    )
-                )
-            )
+            city.inflectedTitle = inflectedTitle
+            completion(.success(city))
             
         }.resume()
     }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 private typealias Msg = ChooseCityLeaf.Msg
 private typealias Model = ChooseCityLeaf.Model
@@ -22,7 +23,18 @@ class ChooseCityLeaf {
         var cities: [City]?
         var error: Error?
         
-        let apiManager = ChooseCityApiManager()
+        let apiManager: ChooseCityApiManager
+        
+        let managedObjectContext: NSManagedObjectContext
+        
+        init(
+            initialInfo: InitialInfo,
+            context: NSManagedObjectContext
+        ) {
+            self.initialInfo = initialInfo
+            managedObjectContext = context
+            apiManager = .init(context: context)
+        }
     }
     
     enum Msg {
@@ -38,11 +50,12 @@ class ChooseCityLeaf {
     }
     
     static func initial(
-        initialInfo: Model.InitialInfo
+        initialInfo: Model.InitialInfo,
+        context: NSManagedObjectContext
     ) -> (() -> (Model, Effect<Msg>?))
     {
         return {
-            (Model(initialInfo: initialInfo),
+            (Model(initialInfo: initialInfo, context: context),
              { $0(.requestCitiesListUpdate) })
         }
     }
@@ -69,10 +82,11 @@ class ChooseCityLeaf {
     // he only needs to store this class while rendering needed
     static func runtime(
         initialInfo: Model.InitialInfo,
+        context: NSManagedObjectContext,
         render: @escaping Runtime<Model, Msg>.Render
     ) -> Any {
         Runtime(
-            initial: initial(initialInfo: initialInfo),
+            initial: initial(initialInfo: initialInfo, context: context),
             update: update,
             render: render
         )
@@ -109,6 +123,29 @@ extension Model {
                     dispatch(.updateCitiesList(cities))
                 }
             }
+        }
+    }
+    
+    fileprivate func updateSortedCities(
+        query: String,
+        city: City,
+        dispatch: @escaping Dispatch<Msg>
+    ) {
+        databaseQueue.async {
+            let sortDescriptors = [
+                NSSortDescriptor(
+                    key: #keyPath(City.id),
+                    ascending: true
+                ),
+            ]
+            dispatch(
+                .updateCitiesList(
+                    managedObjectContext
+                        .get(
+                            sortDescriptors: sortDescriptors
+                        )
+                )
+            )
         }
     }
 }

@@ -23,7 +23,8 @@ class ChooseCityViewController: UIViewController {
             sections: [.chooseCityListSection()]
         )
         runtime = ChooseCityLeaf.runtime(
-            initialInfo: initialInfo
+            initialInfo: initialInfo,
+            context: managedObjectContext
         ) { [weak self] in
             self?.render(props: $0, dispatch: $1)
         }
@@ -38,7 +39,7 @@ class ChooseCityViewController: UIViewController {
                 rows: props.cities.map { city in
                     ChooseCityCellCellModel(
                         props: .init(
-                            title: city.title,
+                            title: city.title!,
                             selected: props.selectedCity == city
                         )
                     )

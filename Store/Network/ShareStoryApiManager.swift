@@ -10,14 +10,14 @@ import SwiftyVK
 import Alamofire
 
 class ShareStoryApiManager {
-    private struct UploadInfo: Codable {
+    private struct UploadInfo: Decodable {
         let uploadUrl: URL
         
         enum CodingKeys: String, CodingKey {
             case uploadUrl = "upload_url"
         }
     }
-    private struct UploadResult: Codable {
+    private struct UploadResult: Decodable {
         let uploadResult: String
         
         enum CodingKeys: String, CodingKey {

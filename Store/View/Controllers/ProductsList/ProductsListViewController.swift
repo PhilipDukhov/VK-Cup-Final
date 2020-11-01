@@ -18,7 +18,7 @@ class ProductsListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Товары общества \(initialInfo.group.name)"
+        title = "Товары общества \(initialInfo.group.name!)"
         collectionViewWrapper = CollectionViewWrapper(
             collectionView: collectionView,
             sections: [.productsListSection()]
@@ -52,7 +52,7 @@ class ProductsListViewController: UIViewController {
                     ProductListCellModel(
                         props: .init(
                             photoSizes: product.photos.first?.sizes,
-                            title: product.title,
+                            title: product.title!,
                             subtitle: product.price.text
                         )
                     )

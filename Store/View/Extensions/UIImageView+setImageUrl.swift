@@ -72,7 +72,6 @@ extension UIImageView: Clearable {
             with: url
         ) { [weak self] data, _, _ in
             self?.handleResponseData(data)
-            print(newUrl)
         }
         dataTask.resume()
         currentTask = dataTask

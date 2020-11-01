@@ -27,7 +27,7 @@ class MarketListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        runtime = MarketListLeaf.runtime { [weak self] in
+        runtime = MarketListLeaf.runtime(context: managedObjectContext) { [weak self] in
             self?.render(props: $0, dispatch: $1)
         }
     }
@@ -66,7 +66,7 @@ class MarketListViewController: UIViewController {
                     MarketListCellModel(
                         props: .init(
                             photoSizes: group.photoSizes,
-                            title: group.name,
+                            title: group.name!,
                             subtitle: group.visibility.description
                         )
                     )
@@ -116,7 +116,7 @@ class MarketListViewController: UIViewController {
     }
 }
 
-extension Group.Visibility {
+extension Visibility {
     fileprivate var description: String {
         switch self {
         case .closed:
@@ -132,7 +132,7 @@ extension City {
         if let inflectedTitle = inflectedTitle {
             return "Магазины в \(inflectedTitle)"
         } else {
-            return "Магазины в городе \(title)"
+            return "Магазины в городе \(title!)"
         }
     }
 }

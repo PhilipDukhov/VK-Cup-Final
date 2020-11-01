@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19H2" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="City" representedClassName=".City" syncable="YES" codeGenerationType="category">
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="inflectedTitle" optional="YES" attributeType="String"/>
+        <attribute name="title" attributeType="String"/>
+    </entity>
+    <entity name="Country" representedClassName=".Country" syncable="YES" codeGenerationType="category">
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="Group" representedClassName=".Group" syncable="YES" codeGenerationType="category">
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isClosed" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="photo50" attributeType="String"/>
+        <attribute name="photo100" attributeType="String"/>
+        <attribute name="photo200" attributeType="String"/>
+        <relationship name="city" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="City"/>
+    </entity>
+    <entity name="Product" representedClassName=".Product" syncable="YES" codeGenerationType="category">
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isFavorite" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="photosData" optional="YES" attributeType="Binary"/>
+        <attribute name="priceData" optional="YES" attributeType="Binary"/>
+        <attribute name="productDescription" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="UserInfo" representedClassName=".UserInfo" syncable="YES" codeGenerationType="category">
+        <relationship name="city" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="City"/>
+        <relationship name="country" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Country"/>
+    </entity>
+    <elements>
+        <element name="Group" positionX="-63" positionY="-18" width="128" height="148"/>
+        <element name="City" positionX="-63" positionY="27" width="128" height="88"/>
+        <element name="Product" positionX="-45" positionY="54" width="128" height="148"/>
+        <element name="Country" positionX="-27" positionY="99" width="128" height="73"/>
+        <element name="UserInfo" positionX="-9" positionY="108" width="128" height="73"/>
+    </elements>
+</model>

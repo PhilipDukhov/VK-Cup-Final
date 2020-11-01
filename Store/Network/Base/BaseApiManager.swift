@@ -7,8 +7,9 @@
 
 import Foundation
 import SwiftyVK
+import CoreData
 
-class BaseApiManager {
+class BaseApiManager {    
     enum Error: Swift.Error {
         case emptyResponse
         case urlRequestError(Swift.Error)
@@ -31,29 +32,65 @@ class BaseApiManager {
         case response
     }
     
-    private let decoder: JSONDecoder = {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
-        return decoder
-    }()
+    private let decoder: JSONDecoder
+    private let managedObjectContext: NSManagedObjectContext?
     
-    func sendHandleAndParse<R: Codable>(
+    init(context: NSManagedObjectContext? = nil) {
+        managedObjectContext = context
+        decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        decoder.userInfo[CodingUserInfoKey.managedObjectContext] = context        
+    }
+    
+    func sendHandleAndParseModelFirst<R: ModelType>(
+        _ apiMethod: SwiftyVK.Method,
+        container: ResponseContainer,
+        completion: @escaping (Result<R, Error>) -> Void
+    ) {
+        sendHandleAndParseFirst(
+            apiMethod,
+            container: container
+        ) { [weak self] (result: Result<R, Error>) in
+            completion(result.map {
+                self?.clearDuplicates([$0])
+                return $0
+            })
+        }
+    }
+    
+    func sendHandleAndParseModel<R: ModelType>(
+        _ apiMethod: SwiftyVK.Method,
+        container: ResponseContainer,
+        completion: @escaping (Result<[R], Error>) -> Void
+    ) {
+        sendHandleAndParse(
+            apiMethod,
+            container: container
+        ) { [weak self] (result: Result<[R], Error>) in
+            completion(result.map {
+                self?.clearDuplicates($0)
+                return $0
+            })
+        }
+    }
+    
+    func sendHandleAndParse<R: Decodable>(
         _ apiMethod: SwiftyVK.Method,
         container: ResponseContainer,
         completion: @escaping (Result<[R], Error>) -> Void
     ) {
         apiMethod.onSuccess { [weak self] data in
-            guard let strongSelf = self else { return }
+            guard let self = self else { return }
             let result: [R]
             switch container {
             case .items:
-                result = try strongSelf.decoder.decode(
+                result = try self.decoder.decode(
                     ResponseItems<R>.self,
                     from: data
                 ).items
                 
             case .response:
-                result = try strongSelf.decoder.decode(
+                result = try self.decoder.decode(
                     [R].self,
                     from: data
                 )
@@ -61,6 +98,7 @@ class BaseApiManager {
             completion(.success(result))
         }
         .onError {
+            print($0)
             completion(
                 .failure(
                     .with(vkError: $0)
@@ -70,7 +108,7 @@ class BaseApiManager {
         .send()
     }
     
-    func sendHandleAndParseFirst<R: Codable>(
+    func sendHandleAndParseFirst<R: Decodable>(
         _ apiMethod: SwiftyVK.Method,
         container: ResponseContainer,
         completion: @escaping (Result<R, Error>) -> Void
@@ -91,6 +129,32 @@ class BaseApiManager {
                 return .failure(.emptyResponse)
             }
             return .success(value)
+        }
+    }
+    
+    private func clearDuplicates<R: ModelType>(
+        _ newObjects: [R]
+    ) {
+        databaseQueue.async { [self] in
+            guard !newObjects.isEmpty else { return }
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
+                entityName: "\(R.self)"
+            )
+            fetchRequest.predicate = NSPredicate(
+                format: "(id IN %@) AND (NOT (self in %@))",
+                newObjects.map { $0.id },
+                newObjects.map { $0.objectID }
+            )
+            do {
+                try managedObjectContext?.execute(
+                    NSBatchDeleteRequest(
+                        fetchRequest: fetchRequest
+                    )
+                )
+                try managedObjectContext?.save()
+            } catch {
+                print(error)
+            }
         }
     }
 }

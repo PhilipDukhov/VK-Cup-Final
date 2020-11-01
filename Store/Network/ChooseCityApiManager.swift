@@ -7,15 +7,20 @@
 
 import Foundation
 import SwiftyVK
+import CoreData
 
 class ChooseCityApiManager {
-    private let baseApiManager = BaseApiManager()
+    private let baseApiManager: BaseApiManager
+    
+    init(context: NSManagedObjectContext) {
+        baseApiManager = BaseApiManager(context: context)
+    }
     
     func getCities(
         country: Country,
         completion: @escaping (Result<[City], BaseApiManager.Error>) -> Void
     ) {
-        baseApiManager.sendHandleAndParse(
+        baseApiManager.sendHandleAndParseModel(
             VK.API.Database.getCities([
                 .countryId: country.id,
             ].stringify),

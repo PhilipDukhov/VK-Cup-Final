@@ -32,17 +32,17 @@ class AuthViewController: UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case .success:
-                    switch self.firstPage {
-                    case .camera:
-                        self.openRecorder()
-                    case .main:
+//                    switch self.firstPage {
+//                    case .camera:
+//                        self.openRecorder()
+//                    case .main:
                         self.navigationController?.replaceTopController(
                             with: R.storyboard.main.marketListViewController()!
                         )
-                        
-                    case .product:
-                        self.openProduct()
-                    }
+//
+//                    case .product:
+//                        self.openProduct()
+//                    }
                     
                 case .failure:
                     self.authorize()
@@ -51,41 +51,41 @@ class AuthViewController: UIViewController {
         }
     }
     
-    private let shareStoryApiManager = ShareStoryApiManager()
-    
-    private let linkResolverApiManager = LinkResolverApiManager()
-    
-    private func getProduct(completion: @escaping (Product) -> Void) {
-        linkResolverApiManager.getProduct(
-            productId: "-30232475_4118841"
-        ) {
-            (try? $0.get()).map(completion)
-        }
-    }
-    
-    private func openRecorder() {
-        getProduct { [weak self] product in
-            executeOnMainQueue {
-                self?.navigationController?.replaceTopController(
-                    with: R.storyboard.main.cameraViewController()!.apply {
-                        $0.functionality = .recorder(product)
-                    }
-                )
-            }
-        }
-    }
-    
-    private func openProduct() {
-        getProduct { [weak self] product in
-            executeOnMainQueue {
-                self?.navigationController?.replaceTopController(
-                    with: R.storyboard.main.productPageViewController()!.apply {
-                        $0.initialInfo = .init(product: product)
-                    }
-                )
-            }
-        }
-    }
+//    private let shareStoryApiManager = ShareStoryApiManager()
+//    
+//    private let linkResolverApiManager = LinkResolverApiManager()
+//    
+//    private func getProduct(completion: @escaping (Product) -> Void) {
+//        linkResolverApiManager.getProduct(
+//            productId: "-30232475_4118841"
+//        ) {
+//            (try? $0.get()).map(completion)
+//        }
+//    }
+//    
+//    private func openRecorder() {
+//        getProduct { [weak self] product in
+//            executeOnMainQueue {
+//                self?.navigationController?.replaceTopController(
+//                    with: R.storyboard.main.cameraViewController()!.apply {
+//                        $0.functionality = .recorder(product)
+//                    }
+//                )
+//            }
+//        }
+//    }
+//    
+//    private func openProduct() {
+//        getProduct { [weak self] product in
+//            executeOnMainQueue {
+//                self?.navigationController?.replaceTopController(
+//                    with: R.storyboard.main.productPageViewController()!.apply {
+//                        $0.initialInfo = .init(product: product)
+//                    }
+//                )
+//            }
+//        }
+//    }
 }
 
 extension AuthViewController: SwiftyVKDelegate {

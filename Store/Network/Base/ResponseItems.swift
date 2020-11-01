@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct ResponseItems<Content: Codable>: Codable {
+struct ResponseItems<Content: Decodable>: Decodable {
     let items: [Content]
 }
