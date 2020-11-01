@@ -6,7 +6,7 @@ platform :ios, ios_deployment_target
 target 'Store' do
   use_frameworks!
   
-  pod 'SwiftyVK', :path => '../SwiftyVK' #git: => 'https://github.com/PhilipDukhov/SwiftyVK'
+  pod 'SwiftyVK', :git => 'https://github.com/PhilipDukhov/SwiftyVK'
   pod 'R.swift.Library'
   pod 'R.swift'
   pod 'DeepDiff'
