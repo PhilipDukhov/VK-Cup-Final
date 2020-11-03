@@ -47,6 +47,7 @@
 		D5677D0B254E624D004FB889 /* ProductsListApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51AA31D254B0CC50087CBF4 /* ProductsListApiManager.swift */; };
 		D5677D0C254E624D004FB889 /* ProductPageApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E845B254C4AB000378BF9 /* ProductPageApiManager.swift */; };
 		D5677D0D254E624D004FB889 /* ChooseCityApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5F20802254AD6DA00F9B71F /* ChooseCityApiManager.swift */; };
+		D5677D692550FA59004FB889 /* NSManagedObject+initOrGet.m in Sources */ = {isa = PBXBuildFile; fileRef = D5677D682550FA59004FB889 /* NSManagedObject+initOrGet.m */; };
 		D58778FA254CB5C0002040AA /* AVCaptureDevice.DiscoverySession+uniqueDevicePositionsCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58778F9254CB5C0002040AA /* AVCaptureDevice.DiscoverySession+uniqueDevicePositionsCount.swift */; };
 		D58778FD254CB7AB002040AA /* CALayer+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D58778FC254CB7AB002040AA /* CALayer+Animation.swift */; };
 		D5966CC8254CEFD000A1EA07 /* PrepareImageStoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5966CC7254CEFD000A1EA07 /* PrepareImageStoryViewController.swift */; };
@@ -130,6 +131,9 @@
 		D55DCB83254E35D3002529D2 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		D55DCB90254E3C12002529D2 /* Base.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base.swift; sourceTree = "<group>"; };
 		D55DCB93254E3C2D002529D2 /* Visibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Visibility.swift; sourceTree = "<group>"; };
+		D5677D5F2550F92E004FB889 /* Store-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Store-Bridging-Header.h"; sourceTree = "<group>"; };
+		D5677D672550FA59004FB889 /* NSManagedObject+initOrGet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+initOrGet.h"; sourceTree = "<group>"; };
+		D5677D682550FA59004FB889 /* NSManagedObject+initOrGet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+initOrGet.m"; sourceTree = "<group>"; };
 		D58778F9254CB5C0002040AA /* AVCaptureDevice.DiscoverySession+uniqueDevicePositionsCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVCaptureDevice.DiscoverySession+uniqueDevicePositionsCount.swift"; sourceTree = "<group>"; };
 		D58778FC254CB7AB002040AA /* CALayer+Animation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Animation.swift"; sourceTree = "<group>"; };
 		D5966CC7254CEFD000A1EA07 /* PrepareImageStoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrepareImageStoryViewController.swift; sourceTree = "<group>"; };
@@ -316,6 +320,8 @@
 				D5F2072B254913EC00F9B71F /* UserInfo.swift */,
 				D55DCB82254E35D3002529D2 /* coredata.xcdatamodeld */,
 				D55DCB90254E3C12002529D2 /* Base.swift */,
+				D5677D672550FA59004FB889 /* NSManagedObject+initOrGet.h */,
+				D5677D682550FA59004FB889 /* NSManagedObject+initOrGet.m */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -323,6 +329,7 @@
 		D5B5D8EF25485AC200A73809 /* Supporting files */ = {
 			isa = PBXGroup;
 			children = (
+				D5677D5F2550F92E004FB889 /* Store-Bridging-Header.h */,
 				D5B5D8F625485B6500A73809 /* R.generated.swift */,
 				D523C0F1254857A50035985A /* AppDelegate.swift */,
 				D523C0FA254857A70035985A /* Assets.xcassets */,
@@ -533,6 +540,7 @@
 				TargetAttributes = {
 					D523C0ED254857A50035985A = {
 						CreatedOnToolsVersion = 12.0.1;
+						LastSwiftMigration = 1200;
 					};
 				};
 			};
@@ -705,6 +713,7 @@
 				D55DCB7B254E2D4A002529D2 /* Clearable.swift in Sources */,
 				D5677D0C254E624D004FB889 /* ProductPageApiManager.swift in Sources */,
 				D51E846B254C5AB600378BF9 /* CaptureButton.swift in Sources */,
+				D5677D692550FA59004FB889 /* NSManagedObject+initOrGet.m in Sources */,
 				D51E8473254C5D6F00378BF9 /* CoreGraphics+Extensions.swift in Sources */,
 				D51E846E254C5B0400378BF9 /* CameraViewController.swift in Sources */,
 				D5B5D8F725485B6500A73809 /* R.generated.swift in Sources */,
@@ -877,6 +886,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = UV9KR38NWW;
 				INFOPLIST_FILE = "Store/Supporting files/Info.plist";
@@ -888,6 +898,8 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -Xfrontend -warn-long-function-bodies=200 -Xfrontend -warn-long-expression-type-checking=200";
 				PRODUCT_BUNDLE_IDENTIFIER = "Philip-Dukhov.VK-CUP-Final";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Store/Supporting files/Store-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -899,6 +911,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = UV9KR38NWW;
 				INFOPLIST_FILE = "Store/Supporting files/Info.plist";
@@ -909,6 +922,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "Philip-Dukhov.VK-CUP-Final";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Store/Supporting files/Store-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

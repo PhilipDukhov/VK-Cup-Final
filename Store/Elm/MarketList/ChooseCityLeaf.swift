@@ -122,7 +122,7 @@ extension Model {
     fileprivate func updateSortedCities(
         _ dispatch: @escaping Dispatch<Msg>
     ) {
-        databaseQueue.async {
+        managedObjectContext.perform {
             let sortDescriptors = [
                 NSSortDescriptor(
                     key: #keyPath(City.id),

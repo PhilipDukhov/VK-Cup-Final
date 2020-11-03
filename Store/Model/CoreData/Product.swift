@@ -42,10 +42,12 @@ class Product: ModelType {
     required convenience init(
         from decoder: Decoder
     ) throws {
-        self.init(context: try decoder.managedObjectContext())
-        
+        let context = try decoder.managedObjectContext()
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(Int64.self, forKey: .id)
+        self.init(
+            orGetFirst: try container.decode(Int64.self, forKey: .id),
+            context: context
+        )
         ownerId = try container.decode(Int64.self, forKey: .ownerId)
         title = try container.decode(String.self, forKey: .title)
         productDescription = try container.decode(String.self, forKey: .productDescription)

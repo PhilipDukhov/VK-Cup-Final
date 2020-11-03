@@ -36,6 +36,20 @@ extension Decoder {
 }
 
 extension NSManagedObjectContext {
+    func performAndWaitThrowing(_ block: () throws -> Void) throws {
+        var handledError: Error? = nil
+        performAndWait {
+            do {
+                try block()
+            } catch {
+                handledError = error
+            }
+        }
+        if let error = handledError {
+            throw error
+        }
+    }
+    
     func get<R: NSManagedObject>(
         predicate: NSPredicate? = nil,
         sortDescriptors: [NSSortDescriptor] = [],

@@ -41,11 +41,13 @@ class Group: ModelType {
     
     required convenience init(
         from decoder: Decoder
-    ) throws {       
-        self.init(context: try decoder.managedObjectContext())
-        
+    ) throws {
+        let context = try decoder.managedObjectContext()
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(Int64.self, forKey: .id)
+        self.init(
+            orGetFirst: try container.decode(Int64.self, forKey: .id),
+            context: context
+        )
         name = try container.decode(String.self, forKey: .name)
         photo50 = try container.decode(String.self, forKey: .photo50)
         photo100 = try container.decode(String.self, forKey: .photo100)

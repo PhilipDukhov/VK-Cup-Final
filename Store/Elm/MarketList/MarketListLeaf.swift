@@ -176,7 +176,7 @@ extension Model: ModelViewable {
 extension Model {
     fileprivate mutating func initCountryAndCityFromUserDefaultsIfNeeded(
     ) {
-        databaseQueue.sync {
+        managedObjectContext.performAndWait {
             guard
                 selectedCountry == nil,
                 let countryId = UserDefaults.standard.string(
@@ -184,7 +184,7 @@ extension Model {
                 ), let country = (managedObjectContext
                                     .get(
                                         predicate: NSPredicate(
-                                            format: "id == '\(countryId)'"
+                                            format: "id == \(countryId)"
                                         ),
                                         fetchLimit: 1
                                     ) as [Country]).first
@@ -195,7 +195,7 @@ extension Model {
             ), let city = (managedObjectContext
                             .get(
                                 predicate: NSPredicate(
-                                    format: "id == '\(cityId)'"
+                                    format: "id == \(cityId)"
                                 ),
                                 fetchLimit: 1
                             ) as [City]).first
@@ -206,7 +206,7 @@ extension Model {
     
     fileprivate var getCurrentUserInfoEffect: Effect<Msg> {
         { dispatch in
-            databaseQueue.async {
+            managedObjectContext.perform {
                 if let userInfo = (
                     managedObjectContext
                         .get(fetchLimit: 1) as [UserInfo]
@@ -301,7 +301,7 @@ extension Model {
         dispatch: @escaping Dispatch<Msg>
     ) {
         let predicate = NSPredicate(
-            format: "(name CONTAINS[c] '\(query)') AND (city.id == '\(city.id)')"
+            format: "(name CONTAINS[c] '\(query)') AND (city.id == \(city.id))"
         )
         let sortDescriptors = [
             NSSortDescriptor(
@@ -309,7 +309,7 @@ extension Model {
                 ascending: true
             ),
         ]
-        databaseQueue.async {
+        managedObjectContext.perform {
             dispatch(
                 .updateGroups(
                     managedObjectContext
@@ -319,6 +319,7 @@ extension Model {
                         )
                 )
             )
+            
         }
     }
 }

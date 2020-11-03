@@ -135,7 +135,7 @@ extension Model {
         dispatch: @escaping Dispatch<Msg>
     ) {
         let predicate = NSPredicate(
-            format: "ownerId == '\(-group.id)'"
+            format: "ownerId == \(-group.id)"
         )
         let sortDescriptors = [
             NSSortDescriptor(
@@ -143,7 +143,7 @@ extension Model {
                 ascending: false
             ),
         ]
-        databaseQueue.async {
+        managedObjectContext.perform {
             let res: [Product] = managedObjectContext
                 .get(
                     predicate: predicate,

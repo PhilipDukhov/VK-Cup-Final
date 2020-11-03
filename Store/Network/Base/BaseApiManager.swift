@@ -33,10 +33,9 @@ class BaseApiManager {
     }
     
     private let decoder: JSONDecoder
-    private let managedObjectContext: NSManagedObjectContext?
+    private let managedObjectContext = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext
     
     init(context: NSManagedObjectContext? = nil) {
-        managedObjectContext = context
         decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         decoder.userInfo[CodingUserInfoKey.managedObjectContext] = context        
@@ -81,7 +80,7 @@ class BaseApiManager {
     ) {
         apiMethod.onSuccess { [weak self] data in
             guard let self = self else { return }
-            try databaseQueue.sync {
+            let block = {
                 let result: [R]
                 switch container {
                 case .items:
@@ -97,6 +96,11 @@ class BaseApiManager {
                     )
                 }
                 completion(.success(result))
+            }
+            if let managedObjectContext = self.managedObjectContext {
+                (try managedObjectContext.performAndWaitThrowing(block))
+            } else {
+                try block()
             }
         }
         .onError {
@@ -136,27 +140,9 @@ class BaseApiManager {
     private func clearDuplicates<R: ModelType>(
         _ newObjects: [R]
     ) {
-        databaseQueue.async { [self] in
-            guard !newObjects.isEmpty else { return }
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
-                entityName: "\(R.self)"
-            )
-            fetchRequest.predicate = NSPredicate(
-                format: "(id IN %@) AND (NOT (self in %@))",
-                newObjects.map { $0.id },
-                newObjects.map { $0.objectID }
-            )
-            do {
-                try managedObjectContext?.execute(
-                    NSBatchDeleteRequest(
-                        fetchRequest: fetchRequest
-                    )
-                )
-                try managedObjectContext?.save()
-            } catch {
-                print(error)
-            }
-        }
+//        managedObjectContext?.perform { [self] in
+            try? managedObjectContext?.save()
+//        }
     }
 }
 

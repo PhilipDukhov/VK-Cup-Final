@@ -32,10 +32,10 @@
         <relationship name="country" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Country"/>
     </entity>
     <elements>
-        <element name="Group" positionX="-63" positionY="-18" width="128" height="148"/>
         <element name="City" positionX="-63" positionY="27" width="128" height="88"/>
-        <element name="Product" positionX="-45" positionY="54" width="128" height="148"/>
         <element name="Country" positionX="-27" positionY="99" width="128" height="73"/>
+        <element name="Group" positionX="-63" positionY="-18" width="128" height="148"/>
+        <element name="Product" positionX="-45" positionY="54" width="128" height="148"/>
         <element name="UserInfo" positionX="-9" positionY="108" width="128" height="73"/>
     </elements>
 </model>
