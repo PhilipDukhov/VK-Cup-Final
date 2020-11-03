@@ -27,6 +27,8 @@ class MarketListTitleView: UIView {
     private let dropdownImageView = UIImageView(
         image: R.image.dropdown_16()
     )
+    
+    private var desiredWidth: CGFloat?
         
     override func layoutSubviews() {
         isHidden = props == nil
@@ -39,10 +41,15 @@ class MarketListTitleView: UIView {
         // if view width is much bigger than screen width,
         // layoutSubviews gets called infinitely until width shortened
         let extraWidth = dropdownImageView.bounds.width + .imageMargin + .distance
-        let width = min(
-            titleLabel.bounds.width + extraWidth,
-            superview?.bounds.width ?? .infinity
-        )
+        var width = titleLabel.bounds.width + extraWidth
+        let superviewRequestsSmallerSize = width == desiredWidth
+        desiredWidth = width
+        if superviewRequestsSmallerSize {
+            width = min(
+                width,
+                superview?.bounds.width ?? .infinity
+            )
+        }
         titleLabel.frame.size.width = frame.size.width - extraWidth
         frame.size = .init(
             width: width,
